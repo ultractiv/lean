@@ -2,7 +2,7 @@
     "name": "ultractiv/lean",
     "description": "The PHP framework for simple, REST API backends. It gets out of your way, so you can get your work done.",
     "require": {
-        "php": ">=5.3.0",
+        "php": ">=5.4.14",
         "mustangostang/spyc": "0.5.x"
     },
     "type": "library",
