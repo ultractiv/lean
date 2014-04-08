@@ -24,21 +24,23 @@ class Router {
   // bool flag to indicate whether a route was resolved or not
   private $_resolved = false;
 
-  public static function instance(){
-    return new self();
-  }
+  /*public static function instance(){
+    return new self;
+  }*/
 
   protected function init(){}
 
-  protected function __construct(){
+  public function __construct(){
 
     $this->path = trim($_SERVER['PATH_INFO'], '/');
     if (!$this->path) $this->path = trim($_GET['path'],'/');
     $this->request = $_SERVER['REQUEST_METHOD'];
 
+    $this->controller = new \Controller;
+
     $this->init();
 
-    if (!$this->controller || !is_subclass_of($this->controller, '\Lean\Controller'))
+    if (!$this->controller)
       throw new RouterException("No controller found in the application");
 
     $this->route();
@@ -137,6 +139,7 @@ class Router {
     }
 
     $method = $this->controllerMethodPrefix  . ucwords( $route );
+
     if (( !isset($this->params['id']) && !empty($this->params))
       || (empty($this->params) && $this->request == 'GET'))
     {

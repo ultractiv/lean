@@ -15,9 +15,9 @@ class Bootstrap {
 
   public function __construct(){
 
-    if (!defined('LEAN_APP_ROOT')) define('LEAN_APP_ROOT', realpath(dirname(\__FILE__)."/../../../app/"));
+    $base_dir =  str_replace('/vendor/ultractiv/lean/src/Lean/Application', '', dirname(__FILE__));
 
-    #if (!defined('APP_ROOT')) define('APP_ROOT', realpath( dirname(\__FILE__)."/../../app/"));
+    if (!defined('LEAN_APP_ROOT')) define('LEAN_APP_ROOT', "$base_dir/app");
 
     if (!defined('HOST')) define('HOST', "{$_SERVER['HTTP_HOST']}/");
 
@@ -34,6 +34,8 @@ class Bootstrap {
     #}
 
     $this->configure();
+
+    new Autoloader;
 
   }
 

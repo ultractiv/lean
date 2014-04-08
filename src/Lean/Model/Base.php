@@ -58,7 +58,10 @@ class Base {
       $this->cache = Cache::instance ();
     }
 
-    $this->notifier = Notifier::instance ();
+    if (class_exists('\Notifier')) {
+      $this->notifier = \Notifier::instance ();
+    }
+
     $this->validator = ValidatorBase::instance ();
 
     if ($attrs && is_numeric ( $attrs ))
@@ -339,7 +342,7 @@ class Base {
   }
 
   protected static function getClassName(){
-    return \__CLASS__ ;
+    return __CLASS__ ;
   }
 
   public function destroy() {
@@ -386,7 +389,7 @@ class Base {
       if (!empty($value)) {
         if ( ini_get('magic_quotes_gpc') ) $value = \stripslashes($value);
         $value = htmlspecialchars(strip_tags($value));
-        $_attrs[$key] = htmlentities($value, \ENT_QUOTES);
+        $_attrs[$key] = htmlentities($value, ENT_QUOTES);
       }
     return $_attrs;
   }

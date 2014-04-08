@@ -23,7 +23,7 @@ trait Traits {
   }
 
   protected static function getClassName(){
-    return \__CLASS__ ;
+    return __CLASS__ ;
   }
 
   public static function instantiate(array $attrs){

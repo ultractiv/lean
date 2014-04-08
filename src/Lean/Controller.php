@@ -27,16 +27,20 @@ class Controller {
 
   protected function init(){}
 
-  public static function instance(){
-    return new self();
-  }
+  /*public static function instance(){
+    return new self;
+  }*/
 
   public function __call($method, $args){
     if (method_exists($this, $method)) $this->$method($args);
-    else throw new ControllerException(\__CLASS__." has no '{$method}' method");
+    else {
+
+
+      #throw new ControllerException(__CLASS__." has no '{$method}' method");
+    }
   }
 
-  protected function __construct() {
+  public function __construct() {
 
     session_start();
 
