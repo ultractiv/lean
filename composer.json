@@ -1,0 +1,25 @@
+{
+    "name": "ultractiv/lean",
+    "description": "The PHP framework for simple, REST API backends. It gets out of your way, so you can get your work done.",
+    "require": {
+        "php": ">=5.3.0",
+        "mustangostang/spyc": "0.5.x"
+    },
+    "type": "library",
+    "keywords": ["framework","api","lean"],
+    "homepage": "http://github.com/ultractiv/lean",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Yemi Agbetunsin",
+            "email": "temi.yemi@gmail.com",
+            "homepage": "http://github.com/temiyemi",
+            "role": "Developer"
+        }
+    ],
+    "autoload": {
+        "psr-0": {
+            "Lean": "src"
+        }
+    }
+}
