@@ -12,15 +12,15 @@ class Notifier {
 
   protected  $defaultSender;
 
-  protected function __construct() {
+  public function __construct() {
     $this->init();
   }
 
   protected function init(){}
   
-  public static function instance(){
+  /*public static function instance(){
   	return new self();
-  }
+  }*/
   
   // Sends off the notification
   protected function send(){
@@ -37,8 +37,7 @@ class Notifier {
     if (!empty($this->attachments))
       $mailer->setAttachments($this->attachments);
 
-    if (getenv('env')!='development')
-      $mailer->send();
+    $mailer->send();
 
   }
   

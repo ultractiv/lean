@@ -75,6 +75,9 @@ class Bootstrap {
       if ($mailer['use']=='mandrill'){
         putenv('mandrill_api_key=' . $mailer['api_key']);
       }
+      if (array_key_exists('pretend', $mailer)) {
+        putenv('mailer_pretend=true');
+      }
     }
 
     if (array_key_exists('uploads', $config)) {

@@ -59,7 +59,7 @@ class Base {
     }
 
     if (class_exists('\Notifier')) {
-      $this->notifier = \Notifier::instance ();
+      $this->notifier = new \Notifier; #::instance ();
     }
 
     $this->validator = ValidatorBase::instance ();

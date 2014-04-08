@@ -70,7 +70,8 @@ class Mailer {
 
   public function send() {
     try {
-      $this->mailer->messages->send($this->message, false);
+      if (!getenv('mailer_pretend'))
+        $this->mailer->messages->send($this->message, false);
       return true;
     } catch (\ErrorException $e){
       Logger::log($e);
