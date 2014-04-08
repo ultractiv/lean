@@ -15,7 +15,8 @@ class Bootstrap {
 
   public function __construct(){
 
-    #if (!defined('ROOT')) define('ROOT', dirname(\__FILE__)."/");
+    if (!defined('LEAN_APP_ROOT')) define('LEAN_APP_ROOT', dirname(\__FILE__)."/../../app/");
+
     #if (!defined('APP_ROOT')) define('APP_ROOT', realpath( dirname(\__FILE__)."/../../app/"));
 
     if (!defined('HOST')) define('HOST', "{$_SERVER['HTTP_HOST']}/");
@@ -38,7 +39,7 @@ class Bootstrap {
 
   private function configure(){
 
-    $config = \Spyc::YAMLLoad(APP_ROOT . 'config.yaml');
+    $config = \Spyc::YAMLLoad(LEAN_APP_ROOT . 'config.yaml');
 
     if (array_key_exists('*', $config)) {
       $config = array_merge_recursive($config['*'], $config[$this->env]);
@@ -75,8 +76,9 @@ class Bootstrap {
     }
 
     if (array_key_exists('uploads', $config)) {
+      $root = realpath(LEAN_APP_ROOT . '/../');
       foreach($config['uploads'] as $resource => $directory)
-        putenv("{$resource}_upload_dir=". ROOT . $directory);
+        putenv("{$resource}_upload_dir=". $root .'/'. $directory);
     }
 
   }
