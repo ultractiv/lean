@@ -8,7 +8,6 @@
 
 namespace Lean\Application;
 
-
 class Autoloader {
 
 } 

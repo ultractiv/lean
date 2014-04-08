@@ -15,7 +15,7 @@ class Bootstrap {
 
   public function __construct(){
 
-    if (!defined('LEAN_APP_ROOT')) define('LEAN_APP_ROOT', dirname(\__FILE__)."/../../app/");
+    if (!defined('LEAN_APP_ROOT')) define('LEAN_APP_ROOT', realpath(dirname(\__FILE__)."/../../../app/"));
 
     #if (!defined('APP_ROOT')) define('APP_ROOT', realpath( dirname(\__FILE__)."/../../app/"));
 
@@ -39,7 +39,7 @@ class Bootstrap {
 
   private function configure(){
 
-    $config = \Spyc::YAMLLoad(LEAN_APP_ROOT . 'config.yaml');
+    $config = \Spyc::YAMLLoad(LEAN_APP_ROOT . '/config.yaml');
 
     if (array_key_exists('*', $config)) {
       $config = array_merge_recursive($config['*'], $config[$this->env]);
