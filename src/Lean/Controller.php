@@ -33,11 +33,7 @@ class Controller {
 
   public function __call($method, $args){
     if (method_exists($this, $method)) $this->$method($args);
-    else {
-
-
-      #throw new ControllerException(__CLASS__." has no '{$method}' method");
-    }
+    else throw new ControllerException(__CLASS__." has no '{$method}' method");
   }
 
   public function __construct() {
