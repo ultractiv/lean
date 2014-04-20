@@ -80,6 +80,16 @@ class Bootstrap {
       }
     }
 
+    if (array_key_exists('social_api', $config)) {
+      if (array_key_exists('twitter', $config['social'])) {
+        $twitter = $config['social']['twitter'];
+        define('TWITTER_CONSUMER_KEY',    $twitter['consumer_key']);
+        define('TWITTER_CONSUMER_SECRET', $twitter['consumer_secret']);
+        define('TWITTER_ACCESS_TOKEN',    $twitter['access_token']);
+        define('TWITTER_ACCESS_SECRET',   $twitter['access_secret']);
+      }
+    }
+
     if (array_key_exists('uploads', $config)) {
       $root = realpath(LEAN_APP_ROOT . '/../');
       foreach($config['uploads'] as $resource => $directory)
