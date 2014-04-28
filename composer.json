@@ -1,12 +1,8 @@
 {
     "name": "ultractiv/lean",
-    "description": "The PHP framework for simple, REST API backends. It gets out of your way, so you can get your work done.",
-    "require": {
-        "php": ">=5.4.14",
-        "mustangostang/spyc": "0.5.x"
-    },
+    "description": "The PHP framework for simple, REST API backend. It gets out of your way, so you can get your work done.",
     "type": "library",
-    "keywords": ["framework","api","lean"],
+    "keywords": ["framework","api","lean","lean development","rest","mvc"],
     "homepage": "http://github.com/ultractiv/lean",
     "license": "MIT",
     "authors": [
@@ -17,6 +13,10 @@
             "role": "Developer"
         }
     ],
+    "require": {
+        "php": ">=5.4.14",
+        "mustangostang/spyc": "0.5.x"
+    },
     "autoload": {
         "psr-0": {
             "Lean": "src/"
