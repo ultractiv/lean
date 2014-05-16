@@ -4,16 +4,31 @@ namespace Lean;
 
 class Notifier {
 
-  protected  $attachments = null;
   protected  $subject = '';
   protected  $message = '';
-  protected  $recipient;
-  protected  $sender = null;
+  protected  $recipient = array();
+  protected  $sender = array();
+  protected  $attachments = array();
 
+  /*
   protected  $defaultSender;
+  protected  $defaultRecipient;
+  */
 
   public function __construct() {
+
+    /*
+    $this->defaultSender = array(
+      getenv('send_from_email'), getenv('send_from_name')
+    );
+
+    $this->defaultRecipient = array(
+      getenv('send_to_email') => getenv('send_to_name')
+    );
+    */
+
     $this->init();
+
   }
 
   protected function init(){}
@@ -25,8 +40,12 @@ class Notifier {
   // Sends off the notification
   protected function send(){
 
+    /*
     if (!$this->sender)
-      $this->sender = array( $this->defaultSender['email'], $this->defaultSender['name'] );
+      $this->sender = $this->defaultSender;
+
+    if (!$this->recipient)
+      $this->recipient = $this->defaultRecipient;*/
 
     $mailer = Mailer::instance();
     $mailer->setSubject($this->subject)
@@ -37,8 +56,16 @@ class Notifier {
     if (!empty($this->attachments))
       $mailer->setAttachments($this->attachments);
 
+    $this->reset();
+
     $mailer->send();
 
+  }
+
+  protected function reset(){
+    $this->sender      = array();
+    $this->recipient   = array();
+    $this->attachments = array();
   }
   
 }
