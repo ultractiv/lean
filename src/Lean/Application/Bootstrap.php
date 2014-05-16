@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: agbetunsin
@@ -7,6 +8,8 @@
  */
 
 namespace Lean\Application;
+
+use \Lean\RouterException;
 
 class Bootstrap {
 
@@ -72,6 +75,10 @@ class Bootstrap {
         putenv('send_from_name='  . $mailer['from']['name']);
         putenv('send_from_email=' . $mailer['from']['email']);
       }
+      if (array_key_exists('to', $mailer)) {
+        putenv('send_to_name='  . $mailer['to']['name']);
+        putenv('send_to_email=' . $mailer['to']['email']);
+      }
       if ($mailer['use']=='mandrill'){
         putenv('mandrill_api_key=' . $mailer['api_key']);
       }
@@ -96,6 +103,11 @@ class Bootstrap {
         putenv("{$resource}_upload_dir=". $root .'/'. $directory);
     }
 
+  }
+
+  public function application(){
+    if (class_exists('\Router')) new \Router;
+    else throw new RouterException("No router class found in ".LEAN_APP_ROOT);
   }
 
 } 
