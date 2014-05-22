@@ -32,8 +32,7 @@ trait Traits {
 
   public static function create(array $attrs){
     $instance = new self($attrs);
-    if ($instance->isValid()) {
-      $instance->save($attrs);
+    if ($instance->isValid() && $instance->save($attrs)) {
       if (self::$notifyOnCreate) $instance->notifier->notifyOnCreate ( $instance->attrs () );
     }
     return $instance;
