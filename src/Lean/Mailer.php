@@ -45,6 +45,8 @@ class Mailer {
 
   public function setTo(array $recipient) {
 
+    $this->message['to'] = array();
+
     if ( empty( $recipient ) )
       $recipient = $this->defaultRecipient;
 
