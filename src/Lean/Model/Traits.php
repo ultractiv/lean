@@ -4,8 +4,6 @@ namespace Lean\Model;
 
 trait Traits {
 
-  protected static $notifyOnCreate = false;
-  
   public static function get($id) {
     $instance = new self ( $id );
     if ($instance->id)
@@ -31,11 +29,11 @@ trait Traits {
   }
 
   public static function create(array $attrs){
-    $instance = new self($attrs);
-    if ($instance->isValid() && $instance->save($attrs)) {
-      if (self::$notifyOnCreate) $instance->notifier->notifyOnCreate ( $instance->attrs () );
-    }
+    $instance = new self ($attrs);
+    $instance->beforeCreate($attrs);
+    if ($instance->isValid() && $instance->save($attrs))
+      $instance->afterCreate();
     return $instance;
   }
-  
+
 }

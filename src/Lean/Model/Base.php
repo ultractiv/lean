@@ -64,9 +64,10 @@ class Base {
 
     $this->validator = ValidatorBase::instance ();
 
-    if ($attrs && is_numeric ( $attrs ))
+    if ($attrs && is_numeric ( $attrs )) {
       // assume $attrs is id
       $this->findOne( array( $this->primary_key => $attrs ) );
+    }
 
     else if ($attrs && is_array ( $attrs )) {
 
@@ -87,6 +88,10 @@ class Base {
   }
 
   protected function init(){}
+
+  protected function setAttrs(array $attrs){
+    $this->attrs = $attrs;
+  }
 
   private function protectAttrs() {
     $protected = explode ( ' ', $this->protected_attrs );
@@ -257,17 +262,28 @@ class Base {
     }
   }
 
+  protected function beforeCreate(array &$attrs){}
+  protected function afterCreate(){}
+
+  protected function beforeSave(){}
+  protected function afterSave(){}
+
   public function save(array $attrs) {
-    if (! $this->id)
-      return $this->_create ( array_merge ( $attrs, $this->_temp ) );
+
+    // pretend to save if no db persistence
+    if ($this->no_backend == true) return true;
+
+    if (! $this->id) return $this->_create ( array_merge ( $attrs, $this->_temp ) );
 
     // revalidate before updating model
     $this->validate($attrs);
+
     // save only when model is valid
     if ($this->isValid()) return $this->_update ( array_merge ( $attrs, $this->_temp ) );
   }
 
-  /*public static function update(array $searchCriteria, array $updateFields) {
+  /*
+  public static function update(array $searchCriteria, array $updateFields) {
       // not yet implemented
       try {
         $update = "update {$this->table} set " . join ( "=?,", array_keys ( $attrs ) ) . "=? where {$this->primary_key}=?";
@@ -275,7 +291,8 @@ class Base {
       catch (Exception $e){
 
       }
-  }*/
+  }
+  */
 
   // set cached
   private function _create(array $attrs) {
@@ -332,6 +349,16 @@ class Base {
     }
   }
 
+  protected function beforeDestroy(){}
+  protected function afterDestroy(){}
+
+  public function destroy() {
+    $this->beforeDestroy();
+    $this->delete();
+    $this->afterDestroy();
+    return true;
+  }
+
   // delete cached value
   protected function delete() {
     $query = "delete from {$this->table} where {$this->primary_key}={$this->id}";
@@ -343,10 +370,6 @@ class Base {
 
   protected static function getClassName(){
     return __CLASS__ ;
-  }
-
-  public function destroy() {
-    $this->delete();
   }
 
   protected function upload($source, $destination, $name = '') {
