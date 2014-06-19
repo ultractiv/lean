@@ -80,7 +80,7 @@ class Router {
     }
     catch (\Exception $e) {
       try {
-        if ($e instanceof ControllerException) $this->matchNonRESTRoutes();
+        if (($e instanceof RouterException) || $e instanceof ControllerException) $this->matchNonRESTRoutes();
         else echo $e->getMessage(); // application / internal server error
       }
       catch (\Exception $ex) {
@@ -101,7 +101,7 @@ class Router {
 
         if ($method != $this->request) continue;
 
-        $pattern = str_replace(':id','(?<id>[a-z0-9]+)',$pattern);
+        $pattern = str_replace(':id','(?<id>[0-9]+)',$pattern);
 
         if (!preg_match("#^{$pattern}$#", $this->path, $matches)) continue;
 
@@ -124,10 +124,10 @@ class Router {
 
     preg_match('#^(?<route>\w+)(/(?<param>[a-z0-9]+)(/(?<sub_route>\w+))?)?$#', $this->path, $matches);
 
+    if (!isset( $matches['route'] )) throw new RouterException('Restful route not matched');
+
     // Singularize route if its plural
-
     $route = substr($matches['route'], 0, -1);
-
 
     if (isset($matches['sub_route']) && isset($matches['param'])) {
       $this->params[ $route . '_id' ] = $matches['param'];
