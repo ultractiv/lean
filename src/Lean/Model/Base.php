@@ -273,6 +273,8 @@ class Base {
     // pretend to save if no db persistence
     if ($this->no_backend == true) return true;
 
+    if (isset($attrs['files_to_upload'])) unset($attrs['files_to_upload']);
+
     if (! $this->id) return $this->_create ( array_merge ( $attrs, $this->_temp ) );
 
     // revalidate before updating model
