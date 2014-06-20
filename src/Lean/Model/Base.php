@@ -129,20 +129,19 @@ class Base {
       $query = "delete from {$table} where ";
 
     $_attrs = $attrs;
-    $lastEntry = array_pop($attrs);
+
+    $lastEntry = array_slice($attrs, -1, 1);
+
+    array_pop($attrs);
 
     switch ($bindParams) {
 
       case true:
 
-        foreach ( $attrs as $key => $value ) {
-          $query .= " $key='$value', ";
-        }
+        foreach ( $attrs as $key => $value )
+          $query .= " $key='$value' and ";
 
-        if (count($_attrs) > 1)
-          $query = substr_replace($query, ' and ', -2);
-
-        $query .= array_search($lastEntry, $_attrs) . "='" . $lastEntry ."' ";
+        $query .= array_keys($lastEntry)[0] . "='" . array_values($lastEntry)[0] ."' ";
 
         break;
 
@@ -150,12 +149,10 @@ class Base {
 
       default:
 
-        $query .= join ( "=?, ", array_keys ( $attrs ) );
+        foreach ( $attrs as $key => $value )
+          $query .= " $key=? and ";
 
-        if (count($_attrs) > 1)
-          $query = substr_replace($query, ' and ', -2);
-
-        $query .= array_search($lastEntry, $_attrs) . "=? ";
+        $query .= array_keys($lastEntry)[0] . "=? ";
 
         break;
 
@@ -201,7 +198,7 @@ class Base {
   // get/set cache
   protected function findOne(array $attrs) {
     try {
-      $select = self::buildQuery($this->table, $attrs) . "limit 1";
+      $select = self::buildQuery($this->table, $attrs) . " limit 1";
       $io = $this->db->prepare ( $select );
       if ($io->execute ( array_values ( $attrs ) ))
         while ( $row = $io->fetch ( \PDO::FETCH_ASSOC ) ) {
@@ -220,9 +217,8 @@ class Base {
   protected function findMany(array $attrs, $asObjects = false) {
     try {
       $select = self::buildQuery($this->table, $attrs);
-      if ($this->order != '') $select .= "order by {$this->table}.{$this->order}";
+      if ($this->order != '') $select .= " order by {$this->order}";
       $io = $this->db->prepare ( $select );
-
       if ($io->execute ( array_values ( $attrs ) )) {
 
         $results = $io->fetchAll ( \PDO::FETCH_ASSOC );
