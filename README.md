@@ -1,4 +1,34 @@
-lean
+Lean
 ====
 
 The PHP framework for simple, REST API backends. It gets out of your way, so you can get your work done.
+Quite similar to [Laravel](github.com/laravel/laravel), but much easier.
+The overall objective is to achieve less clutter on the server.
+
+As used in:
+* [Annals of Tropical Pathology](http://annalsoftropicalpathology.org)
+* [Ultractiv](ultractiv.com.ng)
+* [Public Interest in Corruption Cases](http://picc.com.ng)
+
+Draw Back:
+* Does not currently handle views
+
+TODO:
+
+* Rename the framework from Lean
+* Create proper documentation - Use Github pages
+* Create a getting started guide - Use Github pages
+* Drop the logging and use Monolog/Monolog instead
+* Drop explicit declaration of production config, and read from ENV vars instead
+* Refactor file upload logic to support AWS
+* Refactor Model/Base class inheritance to drop the use of Model/Traits
+* Use an inflection library to pluralize/singularize model names
+* Refactor Controller to include a __magic method that automatically implements actions on matched RESTful CRUD routes
+* Implement the View class
+* Integrate a templating library to handle view rendering
+* Add an application generator script (bash/dll) so that skeleton can be built from commandline
+* and many more
+
+Creator:
+
+* [Yemi Agbetunsin](github.com/temiyemi)
