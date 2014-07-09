@@ -53,7 +53,7 @@ class Base {
 
     if (!$this->no_backend) {      
       if (! $this->table)
-        $this->table = strtolower ( Inflector::get()->pluralize( __CLASS__ ) );
+        $this->table = strtolower ( Inflector::get()->pluralize( get_class($this) ) );
       $this->db = DB::instance ();
     }
 

@@ -6,8 +6,8 @@ trait Traits {
 
   public static function get($id) {
     $instance = new static( $id );
-    if ($instance->id)
-      return $instance;
+    if (!$instance->id) throw new Exception(static::getClassName() . " with id=" .$id. " does not exist.");
+    return $instance;
   }
   
   public static function all(){

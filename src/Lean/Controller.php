@@ -24,6 +24,11 @@ class Controller {
 
   protected $err = false;
 
+  # array or $resourceName => $modelClassName mappings
+  # for RESTful resources that do not resolve to models
+  # with the same name
+  protected $resourceMappings = array();
+
   # enable to automatically process RESTful CRUD request
   # when matching models are defined for the requested routes
   public $autoCRUD = false;
@@ -93,31 +98,30 @@ class Controller {
     $this->data = $data;
   }
 
-  /* Magic REST controller methods */
-
-  public function getModel($modelClass){
-
+  private function checkModelExists(&$modelClass) {
+    if (array_key_exists($modelClass, $this->resourceMappings)) {
+      $modelClass = $this->resourceMappings[$modelClass];
+    }
     if (!class_exists($modelClass))
       throw new ControllerException('Model '.$modelClass.' class does not exist in '.LEAN_APP_ROOT.'/models');
+    return $modelClass;
+  }
 
+  /* Magic REST controller methods */
+  public function getModel($modelClass){
+    $this->checkModelExists(&$modelClass);
     $instance = $modelClass::get($this->params['id']);
-    if (!$instance) return $this->err = "No such {$modelClass}";
+    //if (!$instance) return $this->err = "No such {$modelClass}";
     return $this->responseData = $instance->attrs();
   }
 
   public function getModels($modelClass){
-
-    if (!class_exists($modelClass))
-      throw new ControllerException('Model '.$modelClass.' class does not exist in '.LEAN_APP_ROOT.'/models');
-
+    $this->checkModelExists(&$modelClass);
     return $this->responseData = $modelClass::all();
   }
 
   public function createModel($modelClass){
-
-    if (!class_exists($modelClass))
-      throw new ControllerException('Model '.$modelClass.' class does not exist in '.LEAN_APP_ROOT.'/models');
-
+    $this->checkModelExists(&$modelClass);
     $instance = $modelClass::create($this->data);
     if (!$instance->isValid())
       return $this->err = $instance->getValidationError();
@@ -125,25 +129,18 @@ class Controller {
   }
 
   public function updateModel($modelClass){
-
-    if (!class_exists($modelClass))
-      throw new ControllerException('Model '.$modelClass.' class does not exist in '.LEAN_APP_ROOT.'/models');
-
+    $this->checkModelExists(&$modelClass);
     $instance = $modelClass::get($this->params['id']);
-    if (!$instance) return $this->err = "No such {$modelClass}";
+    //if (!$instance) return $this->err = "No such {$modelClass}";
     if (! $instance->save($this->data) )
       return $this->err = $instance->getValidationError();
     return $this->responseData = $instance->attrs();
   }
 
   public function destroyModel($modelClass){
-
-    if (!class_exists($modelClass))
-      throw new ControllerException('Model '.$modelClass.' class does not exist in '.LEAN_APP_ROOT.'/models');
-
+    $this->checkModelExists(&$modelClass);
     $instance = $modelClass::get($this->params['id']);
-    if (!$instance)
-      return $this->err = "No such {$modelClass}";
+    //if (!$instance) return $this->err = "No such {$modelClass}";
     $instance->destroy();
   }
 
