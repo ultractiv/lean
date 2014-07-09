@@ -31,7 +31,7 @@ Hence, this is best suited to provisionign JSON APIs, at the moment.
 * Implement the `View` class
 * Integrate a templating library to handle view rendering
 * Extend `Model/Base` to handle authentication and password encryption (using `bcrypt`)
-* Extend `Model/Base` to take care of virtual attributes
+* [Done] Extend `Model/Base` to take care of virtual attributes
 * Add an application generator script (bash/dll) so that skeleton can be built from commandline
 * and many more
 

@@ -5,7 +5,6 @@
  * User: agbetunsin
  * Date: 4/5/14
  * Time: 9:23 PM
-
  * Single controller class that encapsulates all actions:
  * All CRUD ops and much more
  */
@@ -25,11 +24,11 @@ class Controller {
 
   protected $err = false;
 
-  protected function init(){}
+  # enable to automatically process RESTful CRUD request
+  # when matching models are defined for the requested routes
+  protected $autoCRUD = false;
 
-  /*public static function instance(){
-    return new self;
-  }*/
+  protected function init(){}
 
   public function __call($method, $args){
     if (method_exists($this, $method)) $this->$method($args);
@@ -92,18 +91,17 @@ class Controller {
 
   /* Magic REST controller methods */
 
-  protected function getModel($modelClass){
+  public function getModel($modelClass){
 
     if (!class_exists($modelClass))
       throw new ControllerException('Model '.$modelClass.' class does not exist');
 
     $instance = $modelClass::get($this->params['id']);
-    if (!$instance) return $this->err = "No such model";
+    if (!$instance) return $this->err = "No such {$modelClass}";
     return $this->responseData = $instance->attrs();
-
   }
 
-  protected function getModels($modelClass){
+  public function getModels($modelClass){
 
     if (!class_exists($modelClass))
       throw new ControllerException('Model '.$modelClass.' class does not exist');
@@ -111,7 +109,7 @@ class Controller {
     return $this->responseData = $modelClass::all();
   }
 
-  protected function createModel($modelClass){
+  public function createModel($modelClass){
 
     if (!class_exists($modelClass))
       throw new ControllerException('Model '.$modelClass.' class does not exist');
@@ -122,26 +120,26 @@ class Controller {
     return $this->responseData = $instance->attrs();
   }
 
-  protected function updateModel($modelClass){
+  public function updateModel($modelClass){
 
     if (!class_exists($modelClass))
       throw new ControllerException('Model '.$modelClass.' class does not exist');
 
     $instance = $modelClass::get($this->params['id']);
-    if (!$instance) return $this->err = "No such model";
+    if (!$instance) return $this->err = "No such {$modelClass}";
     if (! $instance->save($this->data) )
       return $this->err = $instance->getValidationError();
     return $this->responseData = $instance->attrs();
   }
 
-  protected function destroyModel($modelClass){
+  public function destroyModel($modelClass){
 
     if (!class_exists($modelClass))
       throw new ControllerException('Model '.$modelClass.' class does not exist');
 
     $instance = $modelClass::get($this->params['id']);
     if (!$instance)
-      return $this->err = "No such model";
+      return $this->err = "No such {$modelClass}";
     $instance->destroy();
   }
 

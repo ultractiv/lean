@@ -8,8 +8,7 @@
  */
 
 namespace Lean\Application;
-
-use \Lean\RouterException;
+use Lean\RouterException;
 
 class Bootstrap {
 
@@ -30,11 +29,7 @@ class Bootstrap {
       $this->env = 'production';
       # Turn off error reporting for all but the most important errors
       error_reporting(E_ERROR);
-    }
-    #else {
-      # redefine host to include application root directory name
-      # $host .= '/annals';
-    #}
+    }   
 
     $this->configure();
 
@@ -106,8 +101,8 @@ class Bootstrap {
   }
 
   public function application(){
-    if (class_exists('\Router')) new \Router;
-    else throw new RouterException("No router class found in ".LEAN_APP_ROOT);
+    if (class_exists('\Router')) return new \Router;
+    else throw new RouterException("No Router class found in ".LEAN_APP_ROOT);
   }
 
 } 

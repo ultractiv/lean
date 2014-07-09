@@ -15,7 +15,8 @@
     ],
     "require": {
         "php": ">=5.4.14",
-        "mustangostang/spyc": "0.5.x"
+        "mustangostang/spyc": "0.5.x",
+      	"icanboogie/inflector":"*"
     },
     "autoload": {
         "psr-0": {

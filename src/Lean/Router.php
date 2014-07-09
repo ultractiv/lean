@@ -7,6 +7,7 @@
  */
 
 namespace Lean;
+use ICanBoogie\Inflector;
 
 class Router {
 
@@ -20,28 +21,33 @@ class Router {
   private $request;
   private $controllerMethodPrefix;
   private $params = array();
+  private $inflector;
+
+  private $urlPatterns = array(
+    'REST' => '#^(?<resource>\w+)(/(?<identifier>[a-z0-9]+)(/(?<sub_resource>\w+))?)?$#',
+    '' => ''
+  );
 
   // bool flag to indicate whether a route was resolved or not
   private $_resolved = false;
-
-  /*public static function instance(){
-    return new self;
-  }*/
 
   protected function init(){}
 
   public function __construct(){
 
     $this->path = trim($_SERVER['PATH_INFO'], '/');
-    if (!$this->path) $this->path = trim($_GET['path'],'/');
+    if (!$this->path) $this->path = trim($_GET['path'], '/');
     $this->request = $_SERVER['REQUEST_METHOD'];
 
-    $this->controller = new \Controller;
+    if (class_exists('\Controller')) $this->controller = new \Controller;
+    else throw new ControllerException("No Controller class found in ".LEAN_APP_ROOT);
 
     $this->init();
 
     if (!$this->controller)
       throw new RouterException("No controller found in the application");
+
+    $this->inflector = Inflector::get();
 
     $this->route();
 
@@ -101,7 +107,7 @@ class Router {
 
         if ($method != $this->request) continue;
 
-        $pattern = str_replace(':id','(?<id>[0-9]+)',$pattern);
+        $pattern = str_replace(':id','(?<id>[0-9]+)', $pattern);
 
         if (!preg_match("#^{$pattern}$#", $this->path, $matches)) continue;
 
@@ -118,38 +124,57 @@ class Router {
     }
   }
 
+  private function usePluralMethod(){
+    return (!isset($this->params['id']) && !empty($this->params))
+      || (empty($this->params) && $this->request == 'GET');
+  }
+
   private function matchRESTRoutes(){
+    
+    preg_match($this->urlPatterns['REST'], $this->path, $matches);
 
-    //TODO: Singularize and Pluralize resources in RESTful routes to map to singular and plural controller methods
+    if (!isset( $matches['resource'] )) throw new RouterException('REST route not matched, try nonREST');
+    
+    $resource = $this->inflector->singularize( $matches['resource'] );
 
-    preg_match('#^(?<route>\w+)(/(?<param>[a-z0-9]+)(/(?<sub_route>\w+))?)?$#', $this->path, $matches);
-
-    if (!isset( $matches['route'] )) throw new RouterException('Restful route not matched');
-
-    // Singularize route if its plural
-    $route = substr($matches['route'], 0, -1);
-
-    if (isset($matches['sub_route']) && isset($matches['param'])) {
-      $this->params[ $route . '_id' ] = $matches['param'];
-      // Singularize subroute if its plural
-      $route = substr($matches['sub_route'], 0, -1);
+    if (isset($matches['sub_resource']) && isset($matches['identifier'])) {
+      $this->params[ $resource . '_id' ] = $matches['identifier'];      
+      $resource = $this->inflector->singularize( $matches['sub_resource']);
     }
-    else if (isset($matches['param'])) {
-      $this->params['id'] = $matches['param'];
+    else if (isset($matches['identifier'])) {
+      $this->params['id'] = $matches['identifier'];
+    }
+    
+    $method = ucfirst( $resource );
+
+    # if (isset($sub_resource)) $modelClass = ucfirst( $sub_resource); 
+
+    if ($this->usePluralMethod())
+    {      
+      $method = $this->inflector->pluralize( $method );
     }
 
-    $method = $this->controllerMethodPrefix  . ucwords( $route );
+    $method = $this->controllerMethodPrefix . $method ;
 
-    if (( !isset($this->params['id']) && !empty($this->params))
+    /*if (( !isset($this->params['id']) && !empty($this->params))
       || (empty($this->params) && $this->request == 'GET'))
     {
       // pluralize method if its singular
       $method = $method . 's';
-    }
+    }*/
 
     $this->controller->setParams($this->params);
 
-    $this->controller->$method();
+    // Check first if Controller has $method
+    // otherwise, if $this->autoCRUD is enable
+    // try the magic crud resolver
+    if (method_exists($this->controller, $method)) $this->controller->$method();
+    else if ($this->autoCRUD == true) {
+      // use magic helper
+      $method = $this->controllerMethodPrefix . 'Model';
+      if ($this->usePluralMethod()) $method .= 's';
+      $this->controller->$method( ucfirst( $resource ) );
+    }
 
     $this->_resolved = true;
 
