@@ -38,7 +38,8 @@ class Base {
 
   protected $attrs = array ();
   protected $_attrs = array (); // collects protected_attributes
-  protected $protected_attrs = ""; // comma-separated list of attrs to hide from public
+  protected $protected_attrs = ""; // space-separated list of attrs to hide from public
+  protected $virtual_attrs = ""; // space-separated list of attrs to not persist to backend
   protected $_temp = array (); // collects attributes created internally before saving model e.g. file upload metadata
 
 
@@ -268,8 +269,14 @@ class Base {
 
     // pretend to save if no db persistence
     if ($this->no_backend == true) return true;
-
+    
+    // unset the placeholder for uploaded files
     if (isset($attrs['files_to_upload'])) unset($attrs['files_to_upload']);
+    
+    // unset all virtual attibutes
+    if ($this->virtual_attrs != '')
+      foreach (explode(' ', $this->virtual_attrs) as $f)
+        if ( isset( $attrs[$f] ) ) unset( $attrs[$f] );
 
     if (! $this->id) return $this->_create ( array_merge ( $attrs, $this->_temp ) );
 
