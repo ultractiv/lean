@@ -9,6 +9,11 @@ trait Traits {
     if (!$instance->id) throw new Exception(static::getClassName() . " with id=" .$id. " does not exist.");
     return $instance;
   }
+
+  public static function find(array $attrs){
+    $instance = new static;
+    if ($instance->findOne ($attrs)) return $instance;
+  }
   
   public static function all(){
     $instance = new static;

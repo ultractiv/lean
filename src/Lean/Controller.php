@@ -98,7 +98,7 @@ class Controller {
     $this->data = $data;
   }
 
-  private function checkModelExists(&$modelClass) {
+  private function checkModelExists($modelClass) {
     if (array_key_exists($modelClass, $this->resourceMappings)) {
       $modelClass = $this->resourceMappings[$modelClass];
     }
@@ -109,19 +109,18 @@ class Controller {
 
   /* Magic REST controller methods */
   public function getModel($modelClass){
-    $this->checkModelExists(&$modelClass);
-    $instance = $modelClass::get($this->params['id']);
-    //if (!$instance) return $this->err = "No such {$modelClass}";
+    $modelClass = $this->checkModelExists($modelClass);
+    $instance = $modelClass::get($this->params['id']);    
     return $this->responseData = $instance->attrs();
   }
 
   public function getModels($modelClass){
-    $this->checkModelExists(&$modelClass);
+    $modelClass = $this->checkModelExists($modelClass);
     return $this->responseData = $modelClass::all();
   }
 
   public function createModel($modelClass){
-    $this->checkModelExists(&$modelClass);
+    $modelClass = $this->checkModelExists($modelClass);
     $instance = $modelClass::create($this->data);
     if (!$instance->isValid())
       return $this->err = $instance->getValidationError();
@@ -129,18 +128,16 @@ class Controller {
   }
 
   public function updateModel($modelClass){
-    $this->checkModelExists(&$modelClass);
-    $instance = $modelClass::get($this->params['id']);
-    //if (!$instance) return $this->err = "No such {$modelClass}";
+    $modelClass = $this->checkModelExists($modelClass);
+    $instance = $modelClass::get($this->params['id']);    
     if (! $instance->save($this->data) )
       return $this->err = $instance->getValidationError();
     return $this->responseData = $instance->attrs();
   }
 
   public function destroyModel($modelClass){
-    $this->checkModelExists(&$modelClass);
-    $instance = $modelClass::get($this->params['id']);
-    //if (!$instance) return $this->err = "No such {$modelClass}";
+    $modelClass = $this->checkModelExists($modelClass);
+    $instance = $modelClass::get($this->params['id']);    
     $instance->destroy();
   }
 
