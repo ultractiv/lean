@@ -12,7 +12,7 @@ class Mailer {
 
   protected $service = 'mandrill';
 
-  private function __construct() {
+  protected function __construct() {
 
     try {
     	$this->mailer = new \Mandrill(getenv('mandrill_api_key'));
@@ -40,7 +40,7 @@ class Mailer {
   }
 
   public static function instance(){
-  	return new self;
+  	return new static;
   }
 
   public function setTo(array $recipient) {

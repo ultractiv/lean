@@ -16,8 +16,7 @@ class Cache {
   }
   
   public static function instance(){
-    $instance = new self;
-    return $instance;
+    return new static;    
   }
   
   public function get($key) {

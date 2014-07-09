@@ -31,7 +31,7 @@ class DB {
   }
   
   public static function instance() {
-    if (!self::$db) new self;
+    if (!self::$db) new static;
     return self::$db;
   }
 

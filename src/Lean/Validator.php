@@ -13,10 +13,10 @@ class Validator {
   );
 
   public static function instance(){
-    return new self();
+    return new static;
   }
 
-  private function __construct(){
+  protected function __construct(){
 
   }
 

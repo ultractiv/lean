@@ -14,8 +14,12 @@ class Notifier {
   protected  $defaultSender;
   protected  $defaultRecipient;
   */
+ 
+  public static function instance() {
+    return new static;
+  }
 
-  public function __construct() {
+  protected function __construct() {
 
     /*
     $this->defaultSender = array(

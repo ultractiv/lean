@@ -5,18 +5,18 @@ namespace Lean\Model;
 trait Traits {
 
   public static function get($id) {
-    $instance = new self ( $id );
+    $instance = new static( $id );
     if ($instance->id)
       return $instance;
   }
   
   public static function all(){
-    $instance = new self ();
+    $instance = new static;
     return $instance->findAll ();
   }
 
   public static function where(array $attrs, $asObjects = false) {
-    $instance = new self ();
+    $instance = new static;
     return $instance->findMany($attrs, $asObjects);
   }
 
@@ -25,11 +25,11 @@ trait Traits {
   }
 
   public static function instantiate(array $attrs){
-    return new self ($attrs);
+    return new static($attrs);
   }
 
   public static function create(array $attrs){
-    $instance = new self ($attrs);
+    $instance = new static($attrs);
     $instance->beforeCreate($attrs);
     if ($instance->isValid() && $instance->save($attrs))
       $instance->afterCreate();

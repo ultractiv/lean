@@ -1,4 +1,4 @@
-<?php
+<?
 
 /**
  * Created by PhpStorm.
@@ -14,6 +14,10 @@ class Bootstrap {
 
   protected $env = 'development';
   protected $config;
+
+  public static function instance(){
+    return new self;
+  }
 
   public function __construct(){
 
@@ -101,8 +105,8 @@ class Bootstrap {
   }
 
   public function application(){
-    if (class_exists('\Router')) return new \Router;
-    else throw new RouterException("No Router class found in ".LEAN_APP_ROOT);
+    if (!class_exists('\Router')) throw new RouterException("No Router class found in ".LEAN_APP_ROOT);
+    return \Router::instance();
   }
 
 } 

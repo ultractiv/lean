@@ -7,10 +7,12 @@ use \Lean\DB;
 use \Lean\Logger;
 use \Lean\Notifier;
 use \Lean\Validator as ValidatorBase;
+use ICanBoogie\Inflector;
 
 class Base {
 
-  use Validator;
+  use Traits;
+  use Validator;  
 
   protected $primary_key = 'id'; // primary key field
   protected $table; // table name of model
@@ -49,9 +51,9 @@ class Base {
 
   protected function __construct($attrs = null) {
 
-    if (!$this->no_backend) {
+    if (!$this->no_backend) {      
       if (! $this->table)
-        $this->table = strtolower ( get_class($this) )."s";
+        $this->table = strtolower ( Inflector::get()->pluralize( __CLASS__ ) );
       $this->db = DB::instance ();
     }
 
@@ -60,7 +62,7 @@ class Base {
     }
 
     if (class_exists('\Notifier')) {
-      $this->notifier = new \Notifier; #::instance ();
+      $this->notifier = \Notifier::instance();
     }
 
     $this->validator = ValidatorBase::instance ();

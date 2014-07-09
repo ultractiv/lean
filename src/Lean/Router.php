@@ -33,14 +33,20 @@ class Router {
 
   protected function init(){}
 
-  public function __construct(){
+  public static function instance(){
+    return new static;
+  }
+
+  protected function __construct(){
 
     $this->path = trim($_SERVER['PATH_INFO'], '/');
     if (!$this->path) $this->path = trim($_GET['path'], '/');
     $this->request = $_SERVER['REQUEST_METHOD'];
 
-    if (class_exists('\Controller')) $this->controller = new \Controller;
-    else throw new ControllerException("No Controller class found in ".LEAN_APP_ROOT);
+    if (!class_exists('\Controller')) 
+      throw new ControllerException("No Controller class found in ".LEAN_APP_ROOT);
+
+    $this->controller = \Controller::instance();
 
     $this->init();
 
@@ -156,12 +162,14 @@ class Router {
 
     $method = $this->controllerMethodPrefix . $method ;
 
-    /*if (( !isset($this->params['id']) && !empty($this->params))
+    /*    
+    if (( !isset($this->params['id']) && !empty($this->params))
       || (empty($this->params) && $this->request == 'GET'))
     {
       // pluralize method if its singular
       $method = $method . 's';
-    }*/
+    }
+    */
 
     $this->controller->setParams($this->params);
 
@@ -169,7 +177,7 @@ class Router {
     // otherwise, if $this->autoCRUD is enable
     // try the magic crud resolver
     if (method_exists($this->controller, $method)) $this->controller->$method();
-    else if ($this->autoCRUD == true) {
+    else if ($this->controller->autoCRUD == true) {
       // use magic helper
       $method = $this->controllerMethodPrefix . 'Model';
       if ($this->usePluralMethod()) $method .= 's';
@@ -182,14 +190,14 @@ class Router {
 
   }
 
+  # TODO: Move this to Controller or View class
   private function notFound(){
-    //header('content-type: text/html', true, 404);
+    // header('content-type: text/html', true, 404);
     header('content-type: text/json', true, 404);
     print json_encode("'/{$this->path}' was not found on this server");
   }
 
 }
-
 
 class RouterException extends \Exception {
 
