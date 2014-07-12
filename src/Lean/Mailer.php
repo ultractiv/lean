@@ -15,9 +15,9 @@ class Mailer {
   protected function __construct() {
 
     try {
-    	$this->mailer = new \Mandrill(getenv('mandrill_api_key'));
+    	$this->mailer = new \Mandrill(\MANDRILL_API_KEY);
     	$this->message = array(
-    	  'headers' => array('Reply-To' => getenv('send_from_email')),
+    	  'headers' => array('Reply-To' => getenv('SEND_FROM_EMAIL')),
     	  'important' => false,
     	  'track_opens' => true
     	);
@@ -30,11 +30,11 @@ class Mailer {
   protected function setDefaults(){
 
     $this->defaultSender = array(
-      getenv('send_from_email'), getenv('send_from_name')
+      getenv('SEND_FROM_EMAIL'), getenv('SEND_FROM_NAME')
     );
 
     $this->defaultRecipient = array(
-      getenv('send_to_email') => getenv('send_to_name')
+      getenv('SEND_TO_EMAIL') => getenv('SEND_TO_NAME')
     );
 
   }
@@ -97,7 +97,7 @@ class Mailer {
 
   public function send() {
     try {
-      if (!getenv('mailer_pretend'))
+      if (!getenv('MAILER_PRETEND'))
         $this->mailer->messages->send($this->message, false);
       return true;
     } catch (\ErrorException $e){

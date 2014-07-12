@@ -14,7 +14,7 @@ class View {
   private $title = '';
 
   public static function instance($title){
-    return new self($title);
+    return new static($title);
   }
 
   private function __construct($title){

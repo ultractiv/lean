@@ -23,10 +23,10 @@ class DB {
   
   private function getCredentials() {
     return $this->creds = array (
-       'host' => getenv('db_host'),
-       'user' => getenv('db_user'),
-       'pass' => getenv('db_pass'),
-       'name' => getenv('db_name') 
+      'host' => \DATABASE_HOST,
+      'user' => \DATABASE_USER,
+      'pass' => \DATABASE_PASS,
+      'name' => \DATABASE_NAME 
     );
   }
   
