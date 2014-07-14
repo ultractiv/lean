@@ -26,8 +26,8 @@ class Cache {
         }
       }
       // setup authentication
-      if (defined(MEMCACHE_USERNAME) && defined(MEMCACHE_PASSWORD)) 
-        $m->setSaslAuthData( \MEMCACHE_USERNAME, \MEMCACHE_PASSWORD );
+      if (defined('MEMCACHE_USERNAME') && defined('MEMCACHE_PASSWORD')) 
+        $m->setSaslAuthData( MEMCACHE_USERNAME, MEMCACHE_PASSWORD );
       $this->memcache = $m;      
     }
   }
