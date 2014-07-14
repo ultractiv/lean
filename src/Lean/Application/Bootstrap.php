@@ -62,7 +62,7 @@ class Bootstrap {
     if (array_key_exists('database', $config)) {
       $db = $config['database'];
       putenv('DATABASE_TYPE='. $db['type']);
-      if (array_key_exists('url', $db) && preg_match($this->patterns['MYSQL_URL'], $this->->read($db['url']), $match)) {
+      if (array_key_exists('url', $db) && preg_match($this->patterns['MYSQL_URL'], $this->read($db['url']), $match)) {
         $db = $match;
       }      
       define('DATABASE_HOST', $this->read($db['host']));
