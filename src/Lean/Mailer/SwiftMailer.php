@@ -1,8 +1,8 @@
 <?
 
-namespace Lean;
+namespace Lean\Mailer;
 
-class Mailer {
+class SwiftMailer implements Interface {
 
   private $message = array();
   private $mailer;
@@ -23,7 +23,7 @@ class Mailer {
     	);
       $this->setDefaults();
     } catch (\ErrorException $e) {
-      # Logger::log($e);
+      Logger::log($e);
     }
   }
 

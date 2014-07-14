@@ -1,56 +1,52 @@
 <?
 
-namespace Lean;
+namespace Lean\Mailer;
 
-class Mailer {
+use Lean\Utils;
+use Lean\Logger;
 
-  private $message = array();
+class Mandrill implements Interface {
+  
   private $mailer;
-
-  protected $defaultSender;
-  protected $defaultRecipient;
-
-  protected $service = 'mandrill';
-
-  protected function __construct() {
-
+  private $defaultSender = array();
+  private $defaultRecipient = array();
+  private $message = array();
+  
+  public function __construct($apikey, $from_email, $from_name, $to_email, $to_name) {
+    
+    if (!class_exists('\Mandrill'))
+      throw new Exception("mandrill/mandrill package is not installed", 1);
+    
     try {
-    	$this->mailer = new \Mandrill(\MANDRILL_API_KEY);
-    	$this->message = array(
-    	  'headers' => array('Reply-To' => getenv('SEND_FROM_EMAIL')),
-    	  'important' => false,
-    	  'track_opens' => true
-    	);
-      $this->setDefaults();
+    	$this->mailer = new \Mandrill($apikey);
     } catch (\ErrorException $e) {
-      # Logger::log($e);
+      throw new Exception("Mandrill Error:" . $e->getMessage(), 1);
     }
-  }
+    
+    $this->defaultSender = array( $from_email, $from_name );
 
-  protected function setDefaults(){
+    $this->defaultRecipient = array( $to_email => $to_name );
 
-    $this->defaultSender = array(
-      getenv('SEND_FROM_EMAIL'), getenv('SEND_FROM_NAME')
+    $this->message = array(
+      'headers' => array('Reply-To' => $from_email),
+      'important' => false,
+      'track_opens' => true
     );
-
-    $this->defaultRecipient = array(
-      getenv('SEND_TO_EMAIL') => getenv('SEND_TO_NAME')
-    );
-
+    
   }
-
+  
   public static function instance(){
   	return new static;
   }
 
-  public function setTo(array $recipient) {
+  public function setTo(array $recipients) {
 
     $this->message['to'] = array();
 
-    if ( empty( $recipient ) )
-      $recipient = $this->defaultRecipient;
+    if ( empty( $recipients ) )
+      $recipients = $this->defaultRecipient;
 
-    foreach ($recipient as $email => $name)
+    foreach ($recipients as $email => $name)
       array_push( $this->message['to'], array( 'email' => $email, 'name' => $name ) );
 
     return $this;
@@ -98,11 +94,11 @@ class Mailer {
 
   public function send() {
     try {
-      if (!getenv('MAILER_PRETEND'))
-        $this->mailer->messages->send($this->message, false);
+      // if (!getenv('MAILER_PRETEND'))
+      $this->mailer->messages->send($this->message, false);
       return true;
     } catch (\ErrorException $e){
-      Logger::log($e);
+      # Logger::log($e);
     }
   }
   
