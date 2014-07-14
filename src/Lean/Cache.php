@@ -19,14 +19,14 @@ class Cache {
       // connections to the server.
       if (!$m->getServerList()) {
         // parse server config
-        $servers = explode(",", \MEMCACHE_SERVERS);
+        $servers = explode(",", MEMCACHE_SERVERS);
         foreach ($servers as $s) {
           $parts = explode(":", $s);
-          $m->addServers($parts[0], $parts[1]);
+          $m->addServer($parts[0], $parts[1]);
         }
       }
       // setup authentication
-      if (\MEMCACHE_USERNAME && \MEMCACHE_PASSWORD) 
+      if (defined(MEMCACHE_USERNAME) && defined(MEMCACHE_PASSWORD)) 
         $m->setSaslAuthData( \MEMCACHE_USERNAME, \MEMCACHE_PASSWORD );
       $this->memcache = $m;      
     }

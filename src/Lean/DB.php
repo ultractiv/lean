@@ -23,10 +23,10 @@ class DB {
   
   private function getCredentials() {
     return $this->creds = array (
-      'host' => \DATABASE_HOST,
-      'user' => \DATABASE_USER,
-      'pass' => \DATABASE_PASS,
-      'name' => \DATABASE_NAME 
+      'host' => DATABASE_HOST,
+      'user' => DATABASE_USER,
+      'pass' => DATABASE_PASS,
+      'name' => DATABASE_NAME 
     );
   }
   
