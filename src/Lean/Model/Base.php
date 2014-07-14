@@ -2,11 +2,11 @@
 
 namespace Lean\Model;
 
-use \Lean\Cache;
-use \Lean\DB;
-use \Lean\Logger;
-use \Lean\Notifier;
-use \Lean\Validator as ValidatorBase;
+use Lean\Cache;
+use Lean\DB;
+use Lean\Logger;
+use Lean\Notifier;
+use Lean\Validator as ValidatorBase;
 use ICanBoogie\Inflector;
 
 class Base {
