@@ -23,7 +23,7 @@ Hence, this is best suited to provisioning JSON APIs, at the moment.
 * [] Create proper documentation - Use Github pages
 * [] Create a getting started guide - Use Github pages
 * [] Drop the logging and use `monolog/monolog` instead
-* [] Drop explicit declaration of production config, and read from `ENV` vars instead
+* [&times;] Drop explicit declaration of production config, and read from `ENV` vars instead
 * [] Refactor file upload logic to support AWS
 * [&times;] Refactor `Model/Base` inheritance to drop the use of `Model/Traits`
 * [&times;] Use an inflection library to pluralize/singularize model names - Now using `icanboogie/inflector`
