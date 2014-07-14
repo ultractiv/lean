@@ -29,11 +29,9 @@ class Notifier {
     $mailer->setSubject($this->subject)
            ->setFrom($this->sender)
            ->setTo($this->recipient)
-           ->setBody(nl2br($this->message, false));
-
-    if (!empty($this->attachments))
-      $mailer->setAttachments($this->attachments);
-
+           ->setBody(nl2br($this->message, false))
+           ->setAttachments($this->attachments);
+           
     $this->reset();
 
     $mailer->send();
@@ -41,6 +39,8 @@ class Notifier {
   }
 
   protected function reset(){
+    $this->subject     = '';
+    $this->message     = '';
     $this->sender      = array();
     $this->recipient   = array();
     $this->attachments = array();
