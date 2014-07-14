@@ -73,9 +73,14 @@ class Bootstrap {
 
     if (array_key_exists('memcached', $config)) {
       $mem = $config['memcached'];
-      define('MEMCACHE_SERVERS',  $this->read($mem['servers']));
-      define('MEMCACHE_USERNAME', $this->read($mem['username']));
-      define('MEMCACHE_PASSWORD', $this->read($mem['password']));
+      if (isset($mem['servers']))
+        define('MEMCACHE_SERVERS',  $this->read($mem['servers']));
+      else if (isset($mem['host']) && isset($mem['port']))
+        define('MEMCACHE_SERVERS',  $this->read($mem['host']) . ":" . $this->read($mem['port']) );
+      if (isset($mem['username']))
+        define('MEMCACHE_USERNAME', $this->read($mem['username']));
+      if (isset($mem['password']))
+        define('MEMCACHE_PASSWORD', $this->read($mem['password']));
     }
 
     if (array_key_exists('mailer', $config)) {
@@ -89,36 +94,46 @@ class Bootstrap {
         putenv('SEND_TO_EMAIL=' . $mailer['to']['email']);
       }
       if (strtolower($mailer['use'])=='mandrill'){
-        define('MANDRILL_APIKEY',   $this->read($mailer['api_key']));
-        define('MANDRILL_USERNAME', $this->read($mailer['username']));
+        if (isset($mailer['mandrill_apikey']))
+          define('MANDRILL_APIKEY',   $this->read($mailer['mandrill_apikey']));
+        if (isset($mailer['mandrill_username']))
+          define('MANDRILL_USERNAME', $this->read($mailer['mandrill_username']));
       }
-      if (strtolower($mailer['use'])=='smtp'){
-        define('SMTP_USER',      $this->read($mailer['smtp_user']));
-        define('SMTP_PASSWORD',  $this->read($mailer['smtp_password']));
-        define('SMTP_HOST',      $this->read($mailer['smtp_host']));
-        define('SMTP_PORT',      $this->read($mailer['smtp_port']));
-      }
+      # TODO: Implement config params parsing fro sendgrid and smtp
+      # if (strtolower($mailer['use'])=='sendgrid'){
+        # define('SMTP_USER',      $this->read($mailer['smtp_user']));
+        # define('SMTP_PASSWORD',  $this->read($mailer['smtp_password']));
+        # define('SMTP_HOST',      $this->read($mailer['smtp_host']));
+        # define('SMTP_PORT',      $this->read($mailer['smtp_port']));
+      # }
+      # if (strtolower($mailer['use'])=='smtp'){
+        # define('SMTP_USER',      $this->read($mailer['smtp_user']));
+        # define('SMTP_PASSWORD',  $this->read($mailer['smtp_password']));
+        # define('SMTP_HOST',      $this->read($mailer['smtp_host']));
+        # define('SMTP_PORT',      $this->read($mailer['smtp_port']));
+      # }
       if (array_key_exists('pretend', $mailer)) {
         putenv('MAILER_PRETEND=true');
       }
     }
 
-    if (array_key_exists('webservices', $config)) {      
-      $webservices = $config['webservices'];
-      if (array_key_exists('twitter', $webservices)) {
-        $twitter = $webservices['twitter'];
+    # if (array_key_exists('webservices', $config)) {      
+      # $webservices = $config['webservices'];
+      if (array_key_exists('twitter', $config)) {
+        $twitter = $config['twitter'];
         define('TWITTER_CONSUMER_KEY',    $this->read($twitter['consumer_key']));
         define('TWITTER_CONSUMER_SECRET', $this->read($twitter['consumer_secret']));
         define('TWITTER_ACCESS_TOKEN',    $this->read($twitter['access_token']));
         define('TWITTER_ACCESS_SECRET',   $this->read($twitter['access_secret']));
       }
-      if (array_key_exists('aws', $webservices)) {
-        $aws = $webservices['aws'];
+      if (array_key_exists('aws', $config)) {
+        $aws = $config['aws'];
         define('AWS_CONSUMER_KEY',    $this->read($aws['consumer_key']));
         define('AWS_CONSUMER_SECRET', $this->read($aws['consumer_secret']));
       }
-    }
-    
+    # }
+
+    # TODO: Implement parsing of required AWS config if upload_to == aws
     if (array_key_exists('uploads', $config)) {
       if (array_key_exists('upload_to', $config)) {
         if (strtolower($config['upload_to'])=='aws') {
