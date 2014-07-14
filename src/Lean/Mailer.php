@@ -15,7 +15,7 @@ class Mailer {
   protected function __construct() {
 
     try {
-    	$this->mailer = new \Mandrill(\MANDRILL_API_KEY);
+    	$this->mailer = new \Mandrill(MANDRILL_APIKEY);
     	$this->message = array(
     	  'headers' => array('Reply-To' => getenv('SEND_FROM_EMAIL')),
     	  'important' => false,
