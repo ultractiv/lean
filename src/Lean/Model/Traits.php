@@ -42,4 +42,10 @@ trait Traits {
     return $instance;
   }
 
+  public static function findOrCreate(array $attrs){    
+    $instance = static::find($attrs);
+    if (!$instance) $instance = static::create($attrs);
+    return $instance;
+  }
+
 }
