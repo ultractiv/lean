@@ -244,15 +244,24 @@ class Base {
   }
 
   // get/set cache
-  protected function findAll(array $joins = null, $joined_fields = "") {
+  protected function findAll(array $joins = array(), array $fields = array()) {
     try {
-      $select = "select {$this->table}.* {$joined_fields} from {$this->table}";
-      if ($joins != null)
-        foreach ($joins as $table => $foreign_key)
-          $select .= " left join {$table} on {$this->table}.{$foreign_key} = {$table}.id";
-      if ($this->order != '') $select .= " order by {$this->table}.{$this->order}";
+      $tables = array();
+      $clauses = array();
 
-      //Logger::logQuery($select);
+      foreach ($joins as $table => $foreign_key){        
+        array_push($tables, $table);
+        array_push($clauses, "{$this->table}.{$foreign_key}={$table}.id");
+      }
+
+      array_unshift($fields, "{$this->table}.*");
+      array_unshift($tables, "{$this->table}");
+
+      $select  = "select ".join(",", $fields)." from ".join(",", $tables);
+      if ($clauses) $select .= " where ".join(" and ", $clauses);
+
+      if ($this->order != '') $select .= " order by {$this->table}.{$this->order}";
+      
       $io = $this->db->prepare ($select);
       if ($io->execute ())
         return $this->protectMany($io->fetchAll ( \PDO::FETCH_ASSOC ));
