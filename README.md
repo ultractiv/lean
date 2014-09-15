@@ -28,8 +28,8 @@ Hence, this is best suited to provisioning JSON APIs, at the moment.
 * [&times;] Refactor `Model/Base` inheritance to drop the use of `Model/Traits`
 * [&times;] Use an inflection library to pluralize/singularize model names - Now using `icanboogie/inflector`
 * [&times;] Refactor `Controller` to include a `__magic` method that automatically executes CRUD actions on matched REST routes
-* [] Implement the `View` class
-* [] Integrate a templating library to handle view rendering
+* [&times;] Implement the `View` class
+* [&times;] Integrate a templating library to handle view rendering
 * [] Extend `Model/Base` to handle authentication and password encryption (using `bcrypt`)
 * [&times;] Extend `Model/Base` to take care of virtual attributes
 * [] Add an application generator script (bash/dll) so that skeleton can be built from commandline

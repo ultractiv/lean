@@ -19,6 +19,9 @@ class Controller {
   protected $params = array(); // request params
   protected $session = array();
 
+  private $view;
+  protected $html;
+
   protected $responseType = 'json';
   protected $responseData = array();
 
@@ -48,6 +51,8 @@ class Controller {
 
     session_start();
 
+    $this->view = View::instance();
+
     $this->data = $_POST;
     $this->get = $_GET;
     $this->file = $_FILES;
@@ -75,7 +80,8 @@ class Controller {
         break;
       case 'html':
         header('content-type: text/html');
-        print !$this->err ? $this->responseData : $this->err;
+        print $this->html;
+        # print !$this->err ? $this->responseData : $this->err;
         break;
       case 'json':
       default:
@@ -107,7 +113,7 @@ class Controller {
     return $modelClass;
   }
 
-  /* Magic REST controller methods */
+  /* Magic REST API controller methods */
   public function getModel($modelClass){
     $modelClass = $this->checkModelExists($modelClass);
     $instance = $modelClass::get($this->params['id']);    
@@ -139,6 +145,21 @@ class Controller {
     $modelClass = $this->checkModelExists($modelClass);
     $instance = $modelClass::get($this->params['id']);    
     $instance->destroy();
+  }
+
+  /**
+   * Rendering HTML views from templates
+   */
+  protected function render($template, $data = array()){
+    $this->responseType = 'html';
+    $this->html = $this->view->render($template, $data);
+  }
+
+  /**
+   * Implement the index route by default
+   */
+  public function index(){
+    $this->render('index');
   }
 
 }

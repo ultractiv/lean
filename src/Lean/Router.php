@@ -39,18 +39,24 @@ class Router {
 
   protected function __construct(){
 
-    $this->path = trim($_SERVER['PATH_INFO'], '/');
-    if (!$this->path) $this->path = trim($_GET['path'], '/');
-    $this->request = $_SERVER['REQUEST_METHOD'];
+    $this->inflector = Inflector::get();
 
     if ( !class_exists('\Controller') )
       throw new ControllerException("No Controller class found in ".LEAN_APP_ROOT);
-
+    
     $this->controller = \Controller::instance();
 
-    $this->init();
+    if (!isset($_SERVER['PATH_INFO']) || !isset($_GET['path'])) {
+      $this->controller->index();
+      return $this->controller->respond();
+    }
+    
+    $this->request = $_SERVER['REQUEST_METHOD'];
 
-    $this->inflector = Inflector::get();
+    $this->path = trim($_SERVER['PATH_INFO'], '/');
+    if (!$this->path) $this->path = trim($_GET['path'], '/');
+
+    $this->init();
 
     $this->route();
 
