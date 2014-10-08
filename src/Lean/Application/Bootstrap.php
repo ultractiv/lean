@@ -16,9 +16,9 @@ class Bootstrap {
   protected $config;
   protected $patterns = array(
     'ENV_VAR'   => '#^%([a-zA-Z_]+)%$#i',
-    'HTTP_HOST' => '#(localhost|127.0.0.1)#i',
+    'LOCALHOST' => '#^(localhost|127.0.0.1)$#i',
     'MYSQL_URL' => '#^mysql://(?<user>.+):(?<password>.+)@(?<host>.+)/(?<name>.+)\?(.*)?$#i',
-    'MONGO_URL' => '#^mongodb://(<?host>.+)/(<?name>.+)$#i',
+    'MONGO_URL' => '#^mongodb://(?<host>.+)/(?<name>.+)$#i',
     'REDIS_URL' => '#^redis://(?<host>.+):(?<port>\d+)$#i'
   );
 
@@ -28,18 +28,32 @@ class Bootstrap {
 
   public function __construct(){
 
-    $base_dir =  str_replace('/vendor/ultractiv/lean/src/Lean/Application', '', dirname(__FILE__));
+    $base_dir =  preg_replace('#(/vendor/.*)$#', '', dirname(__FILE__));
 
     if (!defined('LEAN_APP_ROOT')) define('LEAN_APP_ROOT', "$base_dir/app");
 
-    if (!defined('HOST')) define('HOST', "{$_SERVER['HTTP_HOST']}/");
-
     # Test environment
-    if (!preg_match($this->patterns['HTTP_HOST'], HOST)) {
+    if (preg_match($this->patterns['LOCALHOST'], $_SERVER['HTTP_HOST'])) {
+      /*$server = array(
+        'http_host'=>$_SERVER['HTTP_HOST'],
+        'remote_addr'=>$_SERVER['REMOTE_ADDR'],
+        'request_uri'=>$_SERVER['REQUEST_URI'],
+        'path_info'=>$_SERVER['PATH_INFO'],
+        'script_name'=>$_SERVER['SCRIPT_NAME'],
+        'document_root'=>$_SERVER['DOCUMENT_ROOT'],
+        'server_addr'=>$_SERVER['SERVER_ADDR'],
+        'server_name'=>$_SERVER['SERVER_NAME']
+      );*/
+      $root = explode('/', ltrim($_SERVER['SCRIPT_NAME'],"/"), 2)[0];
+    }
+    else {
       $this->env = 'production';
+      $root = '';
       # Turn off error reporting for all but the most important errors
       error_reporting(E_ERROR);
-    }   
+    }
+
+    if (!defined('HOST')) define('HOST', "{$_SERVER['HTTP_HOST']}/{$root}");
 
     $this->configure();
 

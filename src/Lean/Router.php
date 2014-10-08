@@ -24,8 +24,7 @@ class Router {
   private $inflector;
 
   private $urlPatterns = array(
-    'REST' => '#^(?<resource>\w+)(/(?<identifier>[a-z0-9]+)(/(?<sub_resource>\w+))?)?$#',
-    '' => ''
+    'REST' => '#^/?(?<resource>\w+)(/(?<identifier>[a-z0-9]+)(/(?<sub_resource>\w+))?)?$#'
   );
 
   // bool flag to indicate whether a route was resolved or not
@@ -46,19 +45,17 @@ class Router {
     
     $this->controller = \Controller::instance();
 
-    if (!isset($_SERVER['PATH_INFO']) || !isset($_GET['path'])) {
-      $this->controller->index();
-      return $this->controller->respond();
-    }
-    
     $this->request = $_SERVER['REQUEST_METHOD'];
 
-    $this->path = trim($_SERVER['PATH_INFO'], '/');
-    if (!$this->path) $this->path = trim($_GET['path'], '/');
+    $this->path = $_SERVER['PATH_INFO'];
+
+    if (!$this->path && isset($_GET['path'])) $this->path = $_GET['path'];
 
     $this->init();
 
     $this->route();
+
+    $this->controller->respond();
 
   }
 
@@ -90,17 +87,24 @@ class Router {
         $this->controllerMethodPrefix = 'get'; // instead of read
     }
 
+    if ($this->path == '') {
+      $this->_resolved = true;
+      return $this->controller->index();
+    }
+
     try {
       $this->matchRESTRoutes();
+      $this->_resolved = true;
     }
     catch (\Exception $e) {
       try {
-        if (($e instanceof RouterException) || $e instanceof ControllerException) $this->matchNonRESTRoutes();
+        if (($e instanceof RouterException) || ($e instanceof ControllerException) || ($e instanceof ModelException)) $this->matchNonRESTRoutes();
         else echo $e->getMessage(); // application / internal server error
       }
       catch (\Exception $ex) {
-        if ($ex instanceof ControllerException) ; // $this->notImplement($ex); // or ->notFound()
-        else echo $ex->getMessage(); // application / internal server error
+        #if ($ex instanceof ControllerException) ; // $this->notImplement($ex); // or ->notFound()
+        #else 
+        echo $ex->getMessage(); // application / internal server error
       }
     }
 
@@ -115,19 +119,21 @@ class Router {
         list($method, $pattern) = explode(' ', $routePattern);
 
         if ($method != $this->request) continue;
+        if (!preg_match("#^/?{$pattern}$#i", $this->path)) continue;
 
-        $pattern = str_replace(':id','(?<id>[0-9]+)', $pattern);
+        # $pattern = str_replace(':id','(?<id>[0-9]+)', $pattern);
+        $pattern = preg_replace('#:([a-z_]+)#i','(?<$0>[a-z0-9\._]+)', $pattern);
+        preg_match("#^/?{$pattern}$#", $this->path, $matches);
 
-        if (!preg_match("#^{$pattern}$#", $this->path, $matches)) continue;
+        if (count($matches) > 1) 
+          $this->controller->setParams($matches);
 
-        if (isset($matches['id']))
-          $this->controller->setParams(array('id'=>$matches['id']));
-
-        $this->controller->$controllerMethod();
+        if (!method_exists($this->controller, $controllerMethod))
+          throw new ControllerException("$controllerMethod is not defined in app/controller.php", 1);
 
         $this->_resolved = true;
 
-        return $this->controller->respond();
+        return $this->controller->$controllerMethod();
 
       }
     }
@@ -176,9 +182,7 @@ class Router {
       $this->controller->$method( ucfirst( $resource ) );
     }
 
-    $this->_resolved = true;
-
-    return $this->controller->respond();
+    # $this->_resolved = true;
 
   }
 
