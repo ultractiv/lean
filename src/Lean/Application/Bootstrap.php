@@ -14,6 +14,12 @@ class Bootstrap {
 
   protected $env = 'development';
   protected $config;
+  private $default_config = array(
+    'database' => array(
+      'type' => 'mysql',
+      'host' => 'localhost'
+    )
+  );
   protected $patterns = array(
     'ENV_VAR'   => '#^%([a-zA-Z_]+)%$#i',
     'LOCALHOST' => '#^(localhost|127.0.0.1)$#i',
