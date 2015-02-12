@@ -28,6 +28,8 @@ class Base {
   );
   */
 
+  protected $s3;
+
   protected $no_backend = false;
   protected $no_cache = false;
   protected $no_validate = false;
@@ -43,7 +45,6 @@ class Base {
   protected $protected_attrs = ""; // space-separated list of attrs to hide from public
   protected $virtual_attrs = ""; // space-separated list of attrs to not persist to backend
   protected $_temp = array (); // collects attributes created internally before saving model e.g. file upload metadata
-
 
   protected $_files = 'files_to_upload'; // holds reference to files to upload
 
@@ -63,6 +64,15 @@ class Base {
 
     if (class_exists('\Notifier')) {
       $this->notifier = \Notifier::instance();
+    }
+
+    if (defined(AWS_CONSUMER_KEY) && defined(AWS_CONSUMER_SECRET) && defined(AWS_BUCKET)) {
+      if (class_exists('\Aws\S3\S3Client')){
+        $this->s3 = \Aws\S3\S3Client::factory(array(
+          'key'=>AWS_CONSUMER_KEY,
+          'secret'=>AWS_CONSUMER_SECRET
+        ));
+      }
     }
 
     $this->validator = ValidatorBase::instance ();
@@ -394,18 +404,40 @@ class Base {
 
     if (! $name) $name = uniqid ( $this->table . '-' );
 
-    if (move_uploaded_file ( $source ['tmp_name'], $destination . $name . $ext )) {
-      $this->_temp ['filesize'] = ceil ( $source ['size'] / 1000 ) . "kb";
+    if (!$this->s3) {
+      if (move_uploaded_file($source ['tmp_name'], $destination . $name . $ext)) {
+        $this->_temp ['filesize'] = ceil($source ['size'] / 1000) . "kb";
+        $this->_temp ['filetype'] = $ext;
+        $this->_temp ['filepath'] = $name . $ext;
+        $this->_temp ['filename'] = $name;
+        return true;
+      } else {
+        unlink($source ['tmp_name']);
+        $this->setValidationError("Could not upload file");
+        return false;
+      }
+    }
+    else {
+      $this->awsUpload($source, $destination, $name, $ext);
+    }
+
+  }
+
+  protected function awsUpload($source, $destination, $name, $ext) {
+    try {
+      $this->s3->putObject(array(
+        'Bucket' => AWS_BUCKET,
+        'Key' => $destination . $name . $ext,
+        'Body' => fopen($source['tmp_name'], 'r'),
+        'ACL' => 'public-read',
+      ));
+      $this->_temp ['filesize'] = ceil($source ['size'] / 1000) . "kb";
       $this->_temp ['filetype'] = $ext;
       $this->_temp ['filepath'] = $name . $ext;
       $this->_temp ['filename'] = $name;
-      return true;
-    } else {
-      unlink ( $source ['tmp_name'] );
-      $this->setValidationError("Could not upload file");
-      return false;
+    } catch (\Aws\S3\Exception\S3Exception $e) {
+      echo $e->getMessage();
     }
-
   }
 
   public function __get($name) {

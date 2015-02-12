@@ -4,62 +4,62 @@ namespace Lean\Model;
 
 interface Interface {
 
-  protected function __construct(array $attrs = null) {}
+  function __construct(array $attrs = null) {}
 
-  public function __call($method, $args) {}
+  function __call($method, $args) {}
 
-  protected function init() {}
+  function init() {}
 
-  protected function setAttrs(array $attrs) {}
+  function setAttrs(array $attrs) {}
 
-  private function protectAttrs() {}
+  function protectAttrs() {}
 
-  protected function protectMany(array $results) {}
+  function protectMany(array $results) {}
 
-  private static function buildQuery($table, array $attrs, $bindParams = false, $queryType = 'select') {}
+  static function buildQuery($table, array $attrs, $bindParams = false, $queryType = 'select') {}
 
-  protected function count(array $attrs) {}
+  function count(array $attrs) {}
   
-  protected function findOne(array $attrs) {}
+  function findOne(array $attrs) {}
   
-  protected function findMany(array $attrs, $asObjects = false) {}
+  function findMany(array $attrs, $asObjects = false) {}
   
-  protected function findAll(array $joins = null, $joined_fields = '') {}
+  function findAll(array $joins = null, $joined_fields = '') {}
 
-  protected function beforeCreate(array &$attrs) {}
+  function beforeCreate(array &$attrs) {}
 
-  protected function afterCreate() {}
+  function afterCreate() {}
 
-  protected function beforeSave() {}
+  function beforeSave() {}
 
-  protected function afterSave() {}
+  function afterSave() {}
 
-  public function save(array $attrs) {}
+  function save(array $attrs) {}
     
-  private function _create(array $attrs) {}
+  function _create(array $attrs) {}
   
-  private function _update(array $attrs) {}
+  function _update(array $attrs) {}
   
-  public static function deleteWhere(array $attrs) {}
+  static function deleteWhere(array $attrs) {}
 
-  protected function beforeDestroy() {}
+  function beforeDestroy() {}
 
-  protected function afterDestroy() {}
+  function afterDestroy() {}
 
-  public function destroy() {}
+  function destroy() {}
   
-  protected function delete() {}
+  function delete() {}
 
-  protected static function getClassName() {}
+  static function getClassName() {}
 
-  protected function upload($source, $destination, $name = '') {}
+  function upload($source, $destination, $name = '') {}
 
-  public function __get($name) {}
+  function __get($name) {}
 
-  public function attrs() {}
+  function attrs() {}
 
-  public function toJSON() {}
+  function toJSON() {}
 
-  protected function clean(array $attrs) {}
+  function clean(array $attrs) {}
   
 }

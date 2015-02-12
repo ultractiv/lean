@@ -22,7 +22,7 @@ class Bootstrap {
   );
   protected $patterns = array(
     'ENV_VAR'   => '#^%([a-zA-Z_]+)%$#i',
-    'LOCALHOST' => '#^(localhost|127.0.0.1)$#i',
+    'LOCALHOST' => '#^(localhost|127.0.0.1|0.0.0.0)$#i',
     'MYSQL_URL' => '#^mysql://(?<user>.+):(?<password>.+)@(?<host>.+)/(?<name>.+)\?(.*)?$#i',
     'MONGO_URL' => '#^mongodb://(?<host>.+)/(?<name>.+)$#i',
     'REDIS_URL' => '#^redis://(?<host>.+):(?<port>\d+)$#i'
@@ -81,7 +81,7 @@ class Bootstrap {
 
     if (array_key_exists('database', $config)) {
       $db = $config['database'];
-      define('DATABASE_TYPE', $db['type']);
+      define('DATABASE_TYPE', $db['type'] || 'mysql');
       if (array_key_exists('url', $db) && preg_match($this->patterns['MYSQL_URL'], $this->read($db['url']), $match)) {
         $db = $match;
       }      
@@ -146,11 +146,7 @@ class Bootstrap {
         define('TWITTER_ACCESS_TOKEN',    $this->read($twitter['access_token']));
         define('TWITTER_ACCESS_SECRET',   $this->read($twitter['access_secret']));
       }
-      if (array_key_exists('aws', $config)) {
-        $aws = $config['aws'];
-        define('AWS_CONSUMER_KEY',    $this->read($aws['consumer_key']));
-        define('AWS_CONSUMER_SECRET', $this->read($aws['consumer_secret']));
-      }
+
     # }
 
     # TODO: Implement parsing of required AWS config if upload_to == aws
@@ -158,6 +154,15 @@ class Bootstrap {
       if (array_key_exists('upload_to', $config)) {
         if (strtolower($config['upload_to'])=='aws') {
           # ensure aws configs are set
+          if (array_key_exists('aws', $config)) {
+            $aws = $config['aws'];
+            define('AWS_CONSUMER_KEY',    $this->read($aws['access_key']));
+            define('AWS_CONSUMER_SECRET', $this->read($aws['secret_key']));
+            define('AWS_BUCKET',          $this->read($aws['bucket']));
+
+            //check that AWS is callable or die
+
+          }
           
         }
         elseif (strtolower($config['upload_to'])=='filesystem') {

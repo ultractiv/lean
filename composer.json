@@ -17,7 +17,7 @@
         "php":">=5.4.14",
         "mustangostang/spyc":"0.5.x",
       	"icanboogie/inflector":"*",
-	"twig/twig":"1.*"
+	    "twig/twig":"1.*"
     },
     "autoload": {
         "psr-0": {
