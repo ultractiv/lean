@@ -17,7 +17,7 @@ class View {
   }
 
   private function __construct(){
-    if (!is_dir(LEAN_APP_ROOT.'/views')) throw new Exception("Can't initialize views", 1);
+    if (!is_dir(LEAN_APP_ROOT.'/views')) throw new ViewException("Can't initialize views", 1);
     $loader = new \Twig_Loader_Filesystem(LEAN_APP_ROOT.'/views');
     $this->twig = new \Twig_Environment($loader, array(
       'cache' => preg_replace('#/app$#', '/tmp', LEAN_APP_ROOT)
