@@ -162,19 +162,17 @@ class Bootstrap {
 
             //check that AWS is callable or die
 
+            foreach($config['uploads'] as $resource => $directory)
+              putenv("{$resource}_upload_dir=".$directory);
           }
-          
         }
-        elseif (strtolower($config['upload_to'])=='filesystem') {
-          
+        else /*if (strtolower($config['upload_to'])=='filesystem')*/ {
+          $root = realpath(LEAN_APP_ROOT . '/../');
+          foreach($config['uploads'] as $resource => $directory)
+            putenv("{$resource}_upload_dir=". $root .'/'. $directory);
         }
       }
-
-      $root = realpath(LEAN_APP_ROOT . '/../');
-      foreach($config['uploads'] as $resource => $directory)
-        putenv("{$resource}_upload_dir=". $root .'/'. $directory);
     }
-
   }
 
   public function application(){
