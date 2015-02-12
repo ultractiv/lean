@@ -67,12 +67,11 @@ class Base {
     }
 
     if (defined('AWS_CONSUMER_KEY') && defined('AWS_CONSUMER_SECRET') && defined('AWS_BUCKET')) {
-      if (class_exists('\Aws\S3\S3Client')){
-        $this->s3 = \Aws\S3\S3Client::factory(array(
-          'key'=>AWS_CONSUMER_KEY,
-          'secret'=>AWS_CONSUMER_SECRET
-        ));
-      }
+      if (! class_exists('\Aws\S3\S3Client') ) throw new Exception("AWS S3 packaged is required");
+      $this->s3 = \Aws\S3\S3Client::factory(array(
+        'key'=> AWS_CONSUMER_KEY,
+        'secret'=> AWS_CONSUMER_SECRET
+      ));
     }
 
     $this->validator = ValidatorBase::instance ();
