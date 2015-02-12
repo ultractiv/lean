@@ -418,25 +418,28 @@ class Base {
       }
     }
     else {
-      $this->awsUpload($source, $destination, $name, $ext);
+      return $this->awsUpload($source, $destination, $name, $ext);
     }
 
   }
 
   protected function awsUpload($source, $destination, $name, $ext) {
     try {
-      $this->s3->putObject(array(
+      $file = $this->s3->putObject(array(
         'Bucket' => AWS_BUCKET,
         'Key' => $destination . $name . $ext,
         'Body' => fopen($source['tmp_name'], 'r'),
         'ACL' => 'public-read',
       ));
+
       $this->_temp ['filesize'] = ceil($source ['size'] / 1000) . "kb";
       $this->_temp ['filetype'] = $ext;
-      $this->_temp ['filepath'] = $name . $ext;
+      $this->_temp ['filepath'] = $file['ObjectURL'];
       $this->_temp ['filename'] = $name;
+      return true;
     } catch (\Aws\S3\Exception\S3Exception $e) {
       echo $e->getMessage();
+      return false;
     }
   }
 
