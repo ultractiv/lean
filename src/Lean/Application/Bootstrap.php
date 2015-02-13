@@ -51,7 +51,7 @@ class Bootstrap {
         'server_addr'=>$_SERVER['SERVER_ADDR'],
         'server_name'=>$_SERVER['SERVER_NAME']
       );*/
-      $root = explode('/', ltrim($_SERVER['SCRIPT_NAME'],"/"), 2)[0];
+      $root = '/' . explode('/', ltrim($_SERVER['SCRIPT_NAME'],"/"), 2)[0];
     }
     else {
       $this->env = 'production';
@@ -60,7 +60,7 @@ class Bootstrap {
       error_reporting(E_ERROR);
     }
 
-    if (!defined('HOST')) define('HOST', "{$_SERVER['HTTP_HOST']}/{$root}");
+    if (!defined('HOST')) define('HOST', $_SERVER['HTTP_HOST'] . $root);
 
     $this->configure();
 

@@ -31,7 +31,7 @@ class View {
     $tmpl = $this->twig->loadTemplate($template);
     # extend data with base_url variable
     $data['base_url'] = $this->host();
-    $data['home_url'] = $this->host() . '/';
+    $data['home_url'] = $this->host();
     return $tmpl->render($data);
   }
 
