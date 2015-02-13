@@ -430,14 +430,14 @@ class Base {
         'Body' => fopen($source['tmp_name'], 'r'),
         'ACL' => 'public-read',
       ));
-
       $this->_temp ['filesize'] = ceil($source ['size'] / 1000) . "kb";
       $this->_temp ['filetype'] = $ext;
       $this->_temp ['filepath'] = $file['ObjectURL'];
       $this->_temp ['filename'] = $name;
       return true;
     } catch (\Aws\S3\Exception\S3Exception $e) {
-      echo $e->getMessage();
+      //echo $e->getMessage();
+      $this->setValidationError("Could not upload file. ". $e->getMessage());
       return false;
     }
   }

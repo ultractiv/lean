@@ -9,31 +9,15 @@ Hence, this is best suited to provisioning JSON APIs, at the moment.
 * [Annals of Tropical Pathology](http://annalsoftropicalpathology.org)
 * [Ultractiv](http://ultractiv.com.ng)
 * [Public Interest in Corruption Cases](http://picc.com.ng)
+* [Destination Connect DMC](http://www.connectdmc.com)
 
-#### Drawbacks:
-* Does not currently handle views
+#### Warning:
+* Lack of documentation could make getting started a bit complex, but holla me at [temi.yemi@gmail.com](mailto:temi.yemi@gmail.com?subject=ultractiv/lean) is you need some help
 
 #### Requirements:
 * PHP `>=5.4.14`
 * Apache Server (with `mod_rewrite`)
 * Nginx Server (as alternative to Apache)
-
-#### TODO:
-* [] Rename the framework from Lean
-* [] Create proper documentation - Use Github pages
-* [] Create a getting started guide - Use Github pages
-* [] Drop the logging and use `monolog/monolog` instead
-* [&times;] Drop explicit declaration of production config, and read from `ENV` vars instead
-* [] Refactor file upload logic to support AWS
-* [&times;] Refactor `Model/Base` inheritance to drop the use of `Model/Traits`
-* [&times;] Use an inflection library to pluralize/singularize model names - Now using `icanboogie/inflector`
-* [&times;] Refactor `Controller` to include a `__magic` method that automatically executes CRUD actions on matched REST routes
-* [&times;] Implement the `View` class
-* [&times;] Integrate a templating library to handle view rendering
-* [] Extend `Model/Base` to handle authentication and password encryption (using `bcrypt`)
-* [&times;] Extend `Model/Base` to take care of virtual attributes
-* [] Add an application generator script (bash/dll) so that skeleton can be built from commandline
-* [] and many more
 
 #### Creator:
 * [Yemi Agbetunsin](https://github.com/temiyemi)
