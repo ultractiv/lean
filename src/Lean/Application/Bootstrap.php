@@ -18,10 +18,11 @@ class Bootstrap {
     'database' => array(
       'type' => 'mysql',
       'host' => 'localhost'
-    )
+    ),
+    'upload_to' => 'filesystem'
   );
   protected $patterns = array(
-    'ENV_VAR'   => '#^%([a-zA-Z_]+)%$#i',
+    'ENV_VAR'   => '#^%([a-zA-Z0-9_]+)%$#i',
     'LOCALHOST' => '#^(localhost|127.0.0.1|0.0.0.0)$#i',
     'MYSQL_URL' => '#^mysql://(?<user>.+):(?<password>.+)@(?<host>.+)/(?<name>.+)\?(.*)?$#i',
     'MONGO_URL' => '#^mongodb://(?<host>.+)/(?<name>.+)$#i',
