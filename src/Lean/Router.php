@@ -123,14 +123,18 @@ class Router {
         list($method, $pattern) = explode(' ', $routePattern);
 
         if ($method != $this->request) continue;
-        if (!preg_match("#^/?{$pattern}$#i", $this->path)) continue;
+        
+        if (!preg_match("#^/?{$pattern}$#i", $this->path)) {
 
-        # $pattern = str_replace(':id','(?<id>[0-9]+)', $pattern);
-        $pattern = preg_replace('#:([a-z_]+)#i','(?<$0>[a-z0-9\._]+)', $pattern);
-        preg_match("#^/?{$pattern}$#", $this->path, $matches);
+          $pattern = preg_replace('#:([a-z_]+)#i','(?<$1>[a-z0-9\._]+)', $pattern);
+          preg_match("#^/?{$pattern}$#", $this->path, $matches);
 
-        if (count($matches) > 1) 
-          $this->controller->setParams($matches);
+          if (!$matches) continue;
+
+          if (count($matches) > 1) 
+            $this->controller->setParams($matches);
+
+        }
 
         if (!method_exists($this->controller, $controllerMethod))
           throw new ControllerException("$controllerMethod is not defined in app/controller.php", 1);
@@ -145,7 +149,7 @@ class Router {
 
     if ($this->_resolved !== true)
         
-        $this->matchRestRoutes();
+      $this->matchRestRoutes();
   }
 
   private function usePluralMethod(){
