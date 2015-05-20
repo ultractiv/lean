@@ -17,14 +17,15 @@ class Bootstrap {
   private $default_config = array(
     'database' => array(
       'type' => 'mysql',
-      'host' => 'localhost'
+      'host' => 'localhost',
+      'port' => '3306'
     ),
     'upload_to' => 'filesystem'
   );
   protected $patterns = array(
     'ENV_VAR'   => '#^%([a-zA-Z0-9_]+)%$#i',
     'LOCALHOST' => '#^(localhost|127.0.0.1|0.0.0.0)$#i',
-    'MYSQL_URL' => '#^mysql://(?<user>.+):(?<password>.+)@(?<host>.+)/(?<name>.+)\?(.*)?$#i',
+    'MYSQL_URL' => '#^mysql://(?<user>.+):(?<password>.+)@(?<host>.+)(?<port>:\d+)?/(?<name>.+)\?(.*)?$#i',
     'MONGO_URL' => '#^mongodb://(?<host>.+)/(?<name>.+)$#i',
     'REDIS_URL' => '#^redis://(?<host>.+):(?<port>\d+)$#i'
   );
@@ -90,6 +91,7 @@ class Bootstrap {
       define('DATABASE_USER', $this->read($db['user']));
       define('DATABASE_PASS', $this->read($db['password']));
       define('DATABASE_NAME', $this->read($db['name']));
+      define('DATABASE_PORT', $this->read($db['port']) || 3306);
     }
 
     if (array_key_exists('memcached', $config)) {

@@ -93,12 +93,14 @@ class Router {
     }
 
     try {
-      $this->matchRESTRoutes();
-      $this->_resolved = true;
+      $this->matchNonRestRoutes();
+      if ($this->_resolved != true)
+        $this->matchRestRoutes();
     }
+
     catch (\Exception $e) {
       try {
-        if (($e instanceof RouterException) || ($e instanceof ControllerException) || ($e instanceof ModelException)) $this->matchNonRESTRoutes();
+        if (($e instanceof RouterException) || ($e instanceof ControllerException) || ($e instanceof ModelException)) $this->matchNonRestRoutes();
         else echo $e->getMessage(); // application / internal server error
       }
       catch (\Exception $ex) {
@@ -112,7 +114,7 @@ class Router {
 
   }
 
-  private function matchNonRESTRoutes(){
+  private function matchNonRestRoutes(){
     if (!empty($this->routes)){
       foreach ($this->routes as $routePattern => $controllerMethod) {
 
@@ -144,7 +146,7 @@ class Router {
       || (empty($this->params) && $this->request == 'GET');
   }
 
-  private function matchRESTRoutes(){
+  private function matchRestRoutes(){
     
     preg_match($this->urlPatterns['REST'], $this->path, $matches);
 

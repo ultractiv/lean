@@ -10,12 +10,18 @@ class DB {
   private function __construct() {
     try {
       $this->getCredentials ();
-      self::$db = new \PDO( "mysql:host={$this->creds['host']};dbname={$this->creds['name']}",
+
+      $options = array ( 
+        \PDO::ATTR_PERSISTENT => true,
+        \PDO::ATTR_ERRMODE    => \PDO::ERRMODE_EXCEPTION 
+      );
+
+      self::$db = new \PDO( "mysql:host={$this->creds['host']};port={$this->creds['port']};dbname={$this->creds['name']}",
                              $this->creds['user'], 
                              $this->creds['pass'], 
-                             array ( \PDO::ATTR_PERSISTENT => true )
+                             $options
                           );
-      self::$db->setAttribute ( \PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION );
+      # self::$db->setAttribute (  );
     } catch ( \PDOException $e ) {
       Logger::log($e);
     }
@@ -26,7 +32,8 @@ class DB {
       'host' => DATABASE_HOST,
       'user' => DATABASE_USER,
       'pass' => DATABASE_PASS,
-      'name' => DATABASE_NAME 
+      'name' => DATABASE_NAME,
+      'port' => DATABASE_PORT 
     );
   }
   
