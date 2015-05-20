@@ -93,14 +93,12 @@ class Router {
     }
 
     try {
-      $this->matchNonRestRoutes();
-      if ($this->_resolved != true)
-        $this->matchRestRoutes();
+      $this->match();
     }
 
     catch (\Exception $e) {
       try {
-        if (($e instanceof RouterException) || ($e instanceof ControllerException) || ($e instanceof ModelException)) $this->matchNonRestRoutes();
+        if (($e instanceof RouterException) || ($e instanceof ControllerException) || ($e instanceof ModelException)) $this->matchRestRoutes();
         else echo $e->getMessage(); // application / internal server error
       }
       catch (\Exception $ex) {
@@ -114,8 +112,12 @@ class Router {
 
   }
 
-  private function matchNonRestRoutes(){
+  private function match(){
+
+    # If non REST routes are defined in $this->routes
+
     if (!empty($this->routes)){
+      
       foreach ($this->routes as $routePattern => $controllerMethod) {
 
         list($method, $pattern) = explode(' ', $routePattern);
@@ -138,7 +140,12 @@ class Router {
         return $this->controller->$controllerMethod();
 
       }
+
     }
+
+    if ($this->_resolved !== true)
+        
+        $this->matchRestRoutes();
   }
 
   private function usePluralMethod(){
