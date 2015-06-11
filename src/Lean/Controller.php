@@ -147,19 +147,40 @@ class Controller {
     $instance->destroy();
   }
 
+  protected function viewData(){
+    return array();
+  }
+
   /**
    * Rendering HTML views from templates
    */
   protected function render($template, $data = array()){
     $this->responseType = 'html';
+    $data = array_merge( $this->viewData(), $data );
     $this->html = $this->view->render($template, $data);
+  }
+
+  protected function _400(){
+
+  }
+
+  protected function _500(){
+
+  }
+
+  protected function redirect($location = ''){
+    return header( 'location: '. $location );
+  }
+
+  protected function redirectBack(){
+    return $this->redirect($_SERVER['HTTP_REFERER']);
   }
 
   /**
    * Implement the index route by default
    */
   public function index(){
-    $this->render('index');
+    $this->render('index', $this->viewData());
   }
 
 }
