@@ -53,8 +53,9 @@ class Base {
   protected function __construct($attrs = null) {
 
     if (!$this->no_backend) {      
-      if (! $this->table)
+      if (! $this->table) {
         $this->table = strtolower ( Inflector::get()->pluralize( get_class($this) ) );
+      }
       $this->db = DB::instance ();
     }
 
@@ -364,7 +365,7 @@ class Base {
   // delete entries from the database at a time
   public static function deleteWhere(array $attrs) {
     $db = DB::instance();
-    $table = strtolower ( static::getClassName() )."s";
+    $table = Inflector::get()->pluralize( strtolower( static::getClassName() ) );
     try {
       $query = static::buildQuery($table, $attrs, true, 'delete');
       $db->exec($query);

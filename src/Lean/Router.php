@@ -47,9 +47,8 @@ class Router {
 
     $this->request = $_SERVER['REQUEST_METHOD'];
 
-    $this->path = $_SERVER['PATH_INFO'];
-
-    if (!$this->path && isset($_GET['path'])) $this->path = $_GET['path'];
+    if ( isset($_SERVER['PATH_INFO']) ) $this->path = $_SERVER['PATH_INFO'];
+    else if ( isset($_GET['path']) ) $this->path = $_GET['path'];
 
     $this->init();
 

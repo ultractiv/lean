@@ -18,7 +18,7 @@ class Bootstrap {
     'database' => array(
       'type' => 'mysql',
       'host' => 'localhost',
-      'port' => '3306'
+      'port' => 3306
     ),
     'upload_to' => 'filesystem'
   );
@@ -91,7 +91,10 @@ class Bootstrap {
       define('DATABASE_USER', $this->read($db['user']));
       define('DATABASE_PASS', $this->read($db['password']));
       define('DATABASE_NAME', $this->read($db['name']));
-      define('DATABASE_PORT', $this->read($db['port']) || 3306);
+
+      if ( isset($db['port']) ) define('DATABASE_PORT', $this->read($db['port']));
+      else  define('DATABASE_PORT', $this->default_config['database']['port']);
+
     }
 
     if (array_key_exists('memcached', $config)) {
@@ -116,7 +119,7 @@ class Bootstrap {
         putenv('SEND_TO_NAME='  . $mailer['to']['name']);
         putenv('SEND_TO_EMAIL=' . $mailer['to']['email']);
       }
-      if (strtolower($mailer['use'])=='mandrill'){
+      if ( isset($mailer['use']) &&  strtolower($mailer['use'])=='mandrill' ){
         if (isset($mailer['mandrill_apikey']))
           define('MANDRILL_APIKEY',   $this->read($mailer['mandrill_apikey']));
         if (isset($mailer['mandrill_username']))
