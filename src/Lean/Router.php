@@ -59,7 +59,7 @@ class Router {
   }
 
   private function parseInputData(){
-    $input = json_decode(file_get_contents("php://input"), true);
+    parse_str(file_get_contents("php://input"), $input);
     if (is_array($input))
       $this->controller->extendPostData($input);
   }
