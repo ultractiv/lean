@@ -158,7 +158,7 @@ class Bootstrap {
     # TODO: Implement parsing of required AWS config if upload_to == aws
     if (array_key_exists('uploads', $config)) {
       if (array_key_exists('upload_to', $config)) {
-        if (strtolower($config['upload_to'])=='aws') {
+        if (strtolower($config['upload_to'])=='aws' || strtolower($config['upload_to'])=='s3') {
           # ensure aws configs are set
           if (array_key_exists('aws', $config)) {
             $aws = $config['aws'];
