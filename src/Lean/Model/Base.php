@@ -286,7 +286,7 @@ class Base {
   protected function beforeSave(){}
   protected function afterSave(){}
 
-  public function save(array $attrs) {
+  public function save(array $attrs, $suppress = false) {
 
     // pretend to save if no db persistence
     if ($this->no_backend == true) return true;
@@ -299,13 +299,21 @@ class Base {
       foreach (explode(' ', $this->virtual_attrs) as $f)
         if ( isset( $attrs[$f] ) ) unset( $attrs[$f] );
 
-    if (! $this->id) return $this->_create ( array_merge ( $attrs, $this->_temp ) );
+    if (! $this->id) {
+      if (!$suppress)
+      return $this->_create ( array_merge ( $attrs, $this->_temp ) );
+      else return $this->_create ( $attrs );
+    }
 
     // revalidate before updating model
     $this->validate($attrs);
 
     // save only when model is valid
-    if ($this->isValid()) return $this->_update ( array_merge ( $attrs, $this->_temp ) );
+    if ($this->isValid()) {
+      if (!$suppress)
+      return $this->_update ( array_merge ( $attrs, $this->_temp ) );
+      else return $this->_update ( $attrs );
+    }
   }
 
   /*

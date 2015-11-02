@@ -25,6 +25,8 @@ class Controller {
   protected $responseType = 'json';
   protected $responseData = array();
 
+  protected $_flashData = array();
+
   protected $err = false;
 
   # array or $resourceName => $modelClassName mappings
@@ -151,36 +153,46 @@ class Controller {
     return array();
   }
 
+  protected function setFlashData($data){
+    $_SESSION['_flashData'] = $data;
+  }
+
+  protected function getFlashData(){
+    return (isset($_SESSION['_flashData'])) ? $_SESSION['_flashData'] : array();
+  }
+
   /**
    * Rendering HTML views from templates
    */
   protected function render($template, $data = array()){
     $this->responseType = 'html';
-    $data = array_merge( $this->viewData(), $data );
+    $data = array_merge( $this->viewData(), $this->getFlashData(), $data );
     $this->html = $this->view->render($template, $data);
+    if (isset($_SESSION['_flashData'])) unset($_SESSION['_flashData']);
   }
 
   protected function _400(){
-
+    $this->render('400');
   }
 
   protected function _500(){
-
+    $this->render('500');
   }
 
-  protected function redirect($location = ''){
-    return header( 'location: '. $location );
+  protected function redirect($location = '', $data){
+    
+    return header( 'location: '. $location ) && $this->setFlashData($data);
   }
 
-  protected function redirectBack(){
-    return $this->redirect($_SERVER['HTTP_REFERER']);
+  protected function redirectBack($data){
+    return $this->redirect($_SERVER['HTTP_REFERER'], $data);
   }
 
   /**
    * Implement the index route by default
    */
   public function index(){
-    $this->render('index', $this->viewData());
+    $this->render('index');
   }
 
 }
