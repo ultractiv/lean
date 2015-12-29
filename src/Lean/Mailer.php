@@ -81,7 +81,7 @@ class Mailer {
   public function setAttachments(array $files) {
     $attachments = array();
     foreach ($files as $path => $new_name) {
-      if (is_readable($path)) {
+      #if (is_readable($path)) {
         $attachment = array(
           'name' => basename($path),
           'type' => Utils::content_type($path),
@@ -89,7 +89,7 @@ class Mailer {
         );
         if ($new_name != '') $attachment['name'] = $new_name;
         $attachments[] = $attachment;
-      }
+      #}
     }
     if (!empty($attachments))
       $this->message['attachments'] = $attachments;
