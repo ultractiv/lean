@@ -5,35 +5,30 @@ namespace Lean\Mailer;
 use Lean\Utils;
 # use Lean\Logger;
 
-class Mandrill implements MailerInterface {
+class Mailgun implements MailerInterface {
   
   private $mailer;
   private $defaultSender = array();
   private $defaultRecipient = array();
   private $message = array();
+  private $attachments = array();
   
   public function __construct($from_email = '', $from_name = '', $to_email = '', $to_name = '') {
     
-    if (!class_exists('\Mandrill'))
-      throw new \Exception("mandrill/mandrill package is not installed", 1);
+    if (!class_exists('\Mailgun\Mailgun'))
+      throw new \Exception("mailgun/mailgun-php package is not installed", 1);
 
-    # check that MANDRILL_APIKEY is set to continue
+    # Check that Mailgun APIKEY and DOMAIN are set as constants first
     
     try {
-    	$this->mailer = new \Mandrill(MANDRILL_APIKEY);
+    	$this->mailer = new \Mailgun\Mailgun(MAILGUN_APIKEY);
     } catch (\ErrorException $e) {
-      throw new \Exception("Mandrill Error:" . $e->getMessage(), 1);
+      throw new \Exception("Mailgun Error:" . $e->getMessage(), 1);
     }
-    
-    $this->defaultSender = array( getenv('SEND_FROM_EMAIL'), getenv('SEND_FROM_NAME') );
 
-    $this->defaultRecipient = array( getenv('SEND_TO_EMAIL') => getenv('SEND_TO_NAME') );
+      $this->defaultSender = array( getenv('SEND_FROM_EMAIL'), getenv('SEND_FROM_NAME') );
 
-    $this->message = array(
-      'headers' => array('Reply-To' => $from_email),
-      'important' => false,
-      'track_opens' => true
-    );
+      $this->defaultRecipient = array( getenv('SEND_TO_EMAIL') => getenv('SEND_TO_NAME') );
     
   }
   
@@ -43,13 +38,13 @@ class Mandrill implements MailerInterface {
 
   public function setTo(array $recipients) {
 
-    $this->message['to'] = array();
+    $this->message['to'] = '';
 
     if ( empty( $recipients ) )
       $recipients = $this->defaultRecipient;
 
     foreach ($recipients as $email => $name)
-      array_push( $this->message['to'], array( 'email' => $email, 'name' => $name ) );
+      $this->message['to'] = "'$name' <$email>";
 
     return $this;
   }
@@ -59,8 +54,7 @@ class Mandrill implements MailerInterface {
     if (empty($sender))
       $sender = $this->defaultSender;
 
-    $this->message['from_email'] = $sender[0];
-    $this->message['from_name']  = $sender[1];
+    $this->message['from'] = "'{$sender[1]}' <{$sender[0]}>";
 
     return $this;
   }
@@ -90,14 +84,15 @@ class Mandrill implements MailerInterface {
       }
     }
     if (!empty($attachments))
-      $this->message['attachments'] = $attachments;
+      $this->attachments = $attachments;
     return $this;
   }
 
   public function send() {
     try {
-      // if (!getenv('MAILER_PRETEND'))
-      $this->mailer->messages->send($this->message, false);
+      if (!getenv('MAILER_PRETEND'))
+        # Now, compose and send your message.
+        $this->mailer->sendMessage(MAILGUN_DOMAIN, $this->message, $this->attachments);
       return true;
     } catch (\ErrorException $e){
       # Logger::log($e);

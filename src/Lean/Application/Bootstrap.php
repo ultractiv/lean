@@ -119,25 +119,44 @@ class Bootstrap {
         putenv('SEND_TO_NAME='  . $mailer['to']['name']);
         putenv('SEND_TO_EMAIL=' . $mailer['to']['email']);
       }
-      if ( isset($mailer['use']) &&  strtolower($mailer['use'])=='mandrill' ){
-        if (isset($mailer['mandrill_apikey']))
-          define('MANDRILL_APIKEY',   $this->read($mailer['mandrill_apikey']));
-        if (isset($mailer['mandrill_username']))
-          define('MANDRILL_USERNAME', $this->read($mailer['mandrill_username']));
-      }
-      # TODO: Implement config params parsing fro sendgrid and smtp
-      # if (strtolower($mailer['use'])=='sendgrid'){
-        # define('SMTP_USER',      $this->read($mailer['smtp_user']));
-        # define('SMTP_PASSWORD',  $this->read($mailer['smtp_password']));
-        # define('SMTP_HOST',      $this->read($mailer['smtp_host']));
-        # define('SMTP_PORT',      $this->read($mailer['smtp_port']));
-      # }
-      # if (strtolower($mailer['use'])=='smtp'){
-        # define('SMTP_USER',      $this->read($mailer['smtp_user']));
-        # define('SMTP_PASSWORD',  $this->read($mailer['smtp_password']));
-        # define('SMTP_HOST',      $this->read($mailer['smtp_host']));
-        # define('SMTP_PORT',      $this->read($mailer['smtp_port']));
-      # }
+
+
+        if (isset($mailer['use'])) {
+
+            putenv('MAILER_USE=' . $mailer['use']);
+
+            switch ( strtolower($mailer['use']) ):
+
+                case 'mandrill':
+                    if (isset($mailer['mandrill_apikey']))
+                        define('MANDRILL_APIKEY',   $this->read($mailer['mandrill_apikey']));
+                    if (isset($mailer['mandrill_username']))
+                        define('MANDRILL_USERNAME', $this->read($mailer['mandrill_username']));
+                    break;
+
+                case 'mailgun':
+                    if (isset($mailer['mailgun_apikey']))
+                        define('MAILGUN_APIKEY',   $this->read($mailer['mailgun_apikey']));
+                    if (isset($mailer['mailgun_domain']))
+                        define('MAILGUN_DOMAIN',   $this->read($mailer['mailgun_domain']));
+                    break;
+
+                case 'sendgrid':
+                    if (isset($mailer['sendgrid_apikey']))
+                        define('SENDGRID_APIKEY',   $this->read($mailer['sendgrid_apikey']));
+                    break;
+
+                case 'smtp':
+                    define('SMTP_USER',      $this->read($mailer['smtp_user']));
+                    define('SMTP_PASSWORD',  $this->read($mailer['smtp_password']));
+                    define('SMTP_HOST',      $this->read($mailer['smtp_host']));
+                    define('SMTP_PORT',      $this->read($mailer['smtp_port']));
+                    break;
+
+            endswitch;
+
+        }
+
       if (array_key_exists('pretend', $mailer)) {
         putenv('MAILER_PRETEND=true');
       }

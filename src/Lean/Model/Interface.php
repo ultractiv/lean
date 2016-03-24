@@ -2,64 +2,64 @@
 
 namespace Lean\Model;
 
-interface Interface {
+interface ModelInterface {
 
-  function __construct(array $attrs = null) {}
+  function __construct(array $attrs = null) ;
 
-  function __call($method, $args) {}
+  function __call($method, $args) ;
 
-  function init() {}
+  function init() ;
 
-  function setAttrs(array $attrs) {}
+  function setAttrs(array $attrs) ;
 
-  function protectAttrs() {}
+  function protectAttrs() ;
 
-  function protectMany(array $results) {}
+  function protectMany(array $results) ;
 
-  static function buildQuery($table, array $attrs, $bindParams = false, $queryType = 'select') {}
+  static function buildQuery($table, array $attrs, $bindParams = false, $queryType = 'select') ;
 
-  function count(array $attrs) {}
+  function count(array $attrs) ;
   
-  function findOne(array $attrs) {}
+  function findOne(array $attrs) ;
   
-  function findMany(array $attrs, $asObjects = false) {}
+  function findMany(array $attrs, $asObjects = false) ;
   
-  function findAll(array $joins = null, $joined_fields = '') {}
+  function findAll(array $joins = null, $joined_fields = '') ;
 
-  function beforeCreate(array &$attrs) {}
+  function beforeCreate(array &$attrs) ;
 
-  function afterCreate() {}
+  function afterCreate() ;
 
-  function beforeSave() {}
+  function beforeSave() ;
 
-  function afterSave() {}
+  function afterSave() ;
 
-  function save(array $attrs) {}
+  function save(array $attrs) ;
     
-  function _create(array $attrs) {}
+  function _create(array $attrs) ;
   
-  function _update(array $attrs) {}
+  function _update(array $attrs) ;
   
-  static function deleteWhere(array $attrs) {}
+  static function deleteWhere(array $attrs) ;
 
-  function beforeDestroy() {}
+  function beforeDestroy() ;
 
-  function afterDestroy() {}
+  function afterDestroy() ;
 
-  function destroy() {}
+  function destroy() ;
   
-  function delete() {}
+  function delete() ;
 
-  static function getClassName() {}
+  static function getClassName() ;
 
-  function upload($source, $destination, $name = '') {}
+  function upload($source, $destination, $name = '') ;
 
-  function __get($name) {}
+  function __get($name) ;
 
-  function attrs() {}
+  function attrs() ;
 
-  function toJSON() {}
+  function toJSON() ;
 
-  function clean(array $attrs) {}
+  function clean(array $attrs) ;
   
 }

@@ -2,7 +2,10 @@
 
 namespace Lean\Mailer;
 
-class SwiftMailer implements Interface {
+use Lean\Logger;
+use Lean\Utils;
+
+class SwiftMailer implements MailerInterface {
 
   private $message = array();
   private $mailer;
@@ -10,9 +13,7 @@ class SwiftMailer implements Interface {
   protected $defaultSender;
   protected $defaultRecipient;
 
-  protected $service = 'mandrill';
-
-  protected function __construct() {
+  protected function __construct( $from_email, $from_name, $to_email, $to_name) {
 
     try {
     	$this->mailer = new \Mandrill(\MANDRILL_API_KEY);
