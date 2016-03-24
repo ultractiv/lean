@@ -4,25 +4,27 @@ namespace Lean;
 
 class Mailer {
 
+    public $service;
+
   protected function __construct() {
 
     switch (getenv('MAILER_USE')):
 
       case 'mandrill':
-        return Mailer\Mandrill::instance();
-            break;
+          $this->service = Mailer\Mandrill::instance();
+          break;
 
       case 'mailgun':
-        return Mailer\Mailgun::instance();
+          $this->service =  Mailer\Mailgun::instance();
             break;
 
       case 'sendgrid':
-        return Mailer\Sengrid::instance();
-            break;
+          $this->service =  Mailer\Sengrid::instance();
+          break;
 
       case 'swiftmailer':
-        return Mailer\SwiftMailer::instance();
-            break;
+          $this->service =  Mailer\SwiftMailer::instance();
+          break;
 
     endswitch;
 

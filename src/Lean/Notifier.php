@@ -26,7 +26,7 @@ class Notifier {
   protected function send(){
     
     $mailer = Mailer::instance();
-    $mailer->setSubject($this->subject)
+    $mailer->service->setSubject($this->subject)
            ->setFrom($this->sender)
            ->setTo($this->recipient)
            ->setBody(nl2br($this->message, false))
@@ -34,7 +34,7 @@ class Notifier {
            
     $this->reset();
 
-    $mailer->send();
+    $mailer->service->send();
 
   }
 
