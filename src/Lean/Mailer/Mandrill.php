@@ -17,7 +17,8 @@ class Mandrill implements MailerInterface {
     if (!class_exists('\Mandrill'))
       throw new \Exception("mandrill/mandrill package is not installed", 1);
 
-    # check that MANDRILL_APIKEY is set to continue
+    if (!defined('MANDRILL_APIKEY'))
+      throw new \Exception("mandrill_apikey must be configured", 1);
     
     try {
     	$this->mailer = new \Mandrill(MANDRILL_APIKEY);
@@ -96,8 +97,8 @@ class Mandrill implements MailerInterface {
 
   public function send() {
     try {
-      // if (!getenv('MAILER_PRETEND'))
-      $this->mailer->messages->send($this->message, false);
+      if (!getenv('MAILER_PRETEND'))
+        $this->mailer->messages->send($this->message, false);
       return true;
     } catch (\ErrorException $e){
       # Logger::log($e);

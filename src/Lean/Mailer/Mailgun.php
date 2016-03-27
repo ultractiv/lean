@@ -18,7 +18,11 @@ class Mailgun implements MailerInterface {
     if (!class_exists('\Mailgun\Mailgun'))
       throw new \Exception("mailgun/mailgun-php package is not installed", 1);
 
-    # Check that Mailgun APIKEY and DOMAIN are set as constants first
+    if (!defined('MAILGUN_APIKEY'))
+      throw new \Exception("mailgun_apikey must be configured", 1);
+
+    if (!defined('MAILGUN_DOMAIN'))
+      throw new \Exception("mailgun_domain must be configured", 1);
     
     try {
     	$this->mailer = new \Mailgun\Mailgun(MAILGUN_APIKEY);
@@ -88,7 +92,6 @@ class Mailgun implements MailerInterface {
   public function send() {
     try {
       if (!getenv('MAILER_PRETEND'))
-        # Now, compose and send your message.
         $this->mailer->sendMessage(MAILGUN_DOMAIN, $this->message, $this->attachments);
       return true;
     } catch (\ErrorException $e){
