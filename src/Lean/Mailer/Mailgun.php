@@ -76,7 +76,7 @@ class Mailgun implements MailerInterface {
       if (is_readable($path)) {
         $attach = array(
           ($new_name != '') ? $new_name : basename($path),
-          fopen($path, 'r')
+          $path
         );
       }
     }
