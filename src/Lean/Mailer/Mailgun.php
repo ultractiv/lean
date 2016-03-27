@@ -73,18 +73,11 @@ class Mailgun implements MailerInterface {
   public function setAttachments(array $files) {
     $attachments = array();
     foreach ($files as $path => $new_name) {
-      if (is_readable($path)) {
-        $attachment = array(
-          'name' => basename($path),
-          'type' => Utils::content_type($path),
-          'content' => base64_encode(file_get_contents($path))
-        );
-        if ($new_name != '') $attachment['name'] = $new_name;
-        $attachments[] = $attachment;
-      }
+      if (is_readable($path))
+        $attachments[] = $path;
     }
     if (!empty($attachments))
-      $this->attachments = $attachments;
+      $this->attachments['attachment'] = $attachments;
     return $this;
   }
 
