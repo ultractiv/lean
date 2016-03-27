@@ -79,8 +79,8 @@ class Mailgun implements MailerInterface {
     foreach ($files as $path => $new_name) {
       if (is_readable($path)) {
         $attach = array(
-          ($new_name != '') ? $new_name : basename($path),
-          $path
+          'remoteName' => ($new_name != '') ? $new_name : basename($path),
+          'filePath' => $path
         );
       }
     }
