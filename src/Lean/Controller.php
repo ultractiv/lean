@@ -89,10 +89,12 @@ class Controller {
       default:
         if (!$this->err) {
           header('content-type: text/json');
-          return print json_encode($this->responseData);
+          print json_encode($this->responseData);
         }
-        header('content-type: text/json', true, 400);
-        print json_encode($this->err);
+        else {
+          header('content-type: text/json', true, 400);
+          print json_encode($this->err);
+        }
         break;
     }
 
