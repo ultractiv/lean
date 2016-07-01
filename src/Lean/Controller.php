@@ -93,6 +93,7 @@ class Controller {
         }
         header('content-type: text/json', true, 400);
         print json_encode($this->err);
+        break;
     }
 
   }
