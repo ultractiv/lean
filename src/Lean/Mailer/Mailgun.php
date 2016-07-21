@@ -42,15 +42,19 @@ class Mailgun implements MailerInterface {
 
   public function setTo(array $recipients) {
 
-    $this->message['to'] = '';
+    $to = array();
 
     if ( empty( $recipients ) )
       $recipients = $this->defaultRecipient;
 
-    foreach ($recipients as $email => $name)
-      $this->message['to'] = "'$name' <$email>";
+    foreach ($recipients as $email => $name) {
+      $to[] = "$name <{$email}>";
+    }
+
+    $this->message['to'] = join(', ', $to);
 
     return $this;
+
   }
 
   public function setFrom(array $sender) {
@@ -93,7 +97,6 @@ class Mailgun implements MailerInterface {
     try {
       if (!getenv('MAILER_PRETEND'))
         $this->mailer->sendMessage(MAILGUN_DOMAIN, $this->message, $this->attachments);
-      # var_dump($this->attachments);
       return true;
     } catch (\ErrorException $e){
       # Logger::log($e);
