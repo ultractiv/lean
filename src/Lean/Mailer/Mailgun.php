@@ -97,7 +97,6 @@ class Mailgun implements MailerInterface {
     try {
       if (!getenv('MAILER_PRETEND'))
         $this->mailer->sendMessage(MAILGUN_DOMAIN, $this->message, $this->attachments);
-      var_dump($this->attachments);
       return true;
     } catch (\ErrorException $e){
       # Logger::log($e);
