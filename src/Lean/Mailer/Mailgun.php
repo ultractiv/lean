@@ -69,6 +69,7 @@ class Mailgun implements MailerInterface {
     }
 
     $this->message['bcc'] = join(', ', $to);
+    $this->message['to'] = $this->message['from'];
 
     return $this;
 
