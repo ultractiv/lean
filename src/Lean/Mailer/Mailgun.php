@@ -57,6 +57,23 @@ class Mailgun implements MailerInterface {
 
   }
 
+  public function setBcc(array $recipients) {
+
+    $to = array();
+
+    if ( empty( $recipients ) )
+      $recipients = $this->defaultRecipient;
+
+    foreach ($recipients as $email => $name) {
+      $to[] = "$name <{$email}>";
+    }
+
+    $this->message['bcc'] = join(', ', $to);
+
+    return $this;
+
+  }
+
   public function setFrom(array $sender) {
 
     if (empty($sender))
