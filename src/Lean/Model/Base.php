@@ -141,8 +141,6 @@ class Base {
     else if ($queryType == 'delete')
       $query = "delete from {$table} where ";
 
-    $_attrs = $attrs;
-
     $lastEntry = array_slice($attrs, -1, 1);
 
     array_pop($attrs);
@@ -170,7 +168,6 @@ class Base {
         break;
 
     }
-    Logger::logQuery($query, $_attrs);
     return $query;
   }
 

@@ -6,13 +6,12 @@ The overall objective is to achieve less clutter on the server, and to move as m
 Hence, this is best suited to provisioning JSON APIs, at the moment.
 
 #### As used in:
-* [Annals of Tropical Pathology](http://annalsoftropicalpathology.org)
-* [Ultractiv](http://ultractiv.com.ng)
-* [Public Interest in Corruption Cases](http://picc.com.ng)
+* [Annals of Tropical Pathology](http://www.annalsoftropicalpathology.org)
+* [SOGHIN](http://www.soghinjournal.com)
 * [Destination Connect DMC](http://www.connectdmc.com)
 
 #### Warning:
-* Lack of documentation could make getting started a bit complex, but holla me at [temi.yemi@gmail.com](mailto:temi.yemi@gmail.com?subject=ultractiv/lean) is you need some help
+* Lack of documentation could make getting started a bit complex, but holla me at [temi.yemi@gmail.com](mailto:temi.yemi@gmail.com?subject=ultractiv/lean) if you need some help
 
 #### Requirements:
 * PHP `>=5.4.14`
