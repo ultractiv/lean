@@ -6,15 +6,15 @@ use Lean\Utils;
 # use Lean\Logger;
 
 class Mailgun implements MailerInterface {
-  
+
   private $mailer;
   private $defaultSender = array();
   private $defaultRecipient = array();
   private $message = array();
   private $attachments = array();
-  
+
   public function __construct($from_email = '', $from_name = '', $to_email = '', $to_name = '') {
-    
+
     if (!class_exists('\Mailgun\Mailgun'))
       throw new \Exception("mailgun/mailgun-php package is not installed", 1);
 
@@ -23,19 +23,19 @@ class Mailgun implements MailerInterface {
 
     if (!defined('MAILGUN_DOMAIN'))
       throw new \Exception("mailgun_domain must be configured", 1);
-    
+
     try {
-    	$this->mailer = new \Mailgun\Mailgun(MAILGUN_APIKEY);
+    	$this->mailer = \Mailgun\Mailgun::create(MAILGUN_APIKEY);
     } catch (\ErrorException $e) {
       throw new \Exception("Mailgun Error:" . $e->getMessage(), 1);
     }
 
-      $this->defaultSender = array( getenv('SEND_FROM_EMAIL'), getenv('SEND_FROM_NAME') );
+    $this->defaultSender = array( getenv('SEND_FROM_EMAIL'), getenv('SEND_FROM_NAME') );
 
-      $this->defaultRecipient = array( getenv('SEND_TO_EMAIL') => getenv('SEND_TO_NAME') );
-    
+    $this->defaultRecipient = array( getenv('SEND_TO_EMAIL') => getenv('SEND_TO_NAME') );
+
   }
-  
+
   public static function instance(){
   	return new static;
   }
@@ -114,11 +114,11 @@ class Mailgun implements MailerInterface {
   public function send() {
     try {
       if (!getenv('MAILER_PRETEND'))
-        $this->mailer->sendMessage(MAILGUN_DOMAIN, $this->message, $this->attachments);
+        $this->mailer->messages()->send(MAILGUN_DOMAIN, $this->message, $this->attachments);
       return true;
     } catch (\ErrorException $e){
       # Logger::log($e);
     }
   }
-  
+
 }

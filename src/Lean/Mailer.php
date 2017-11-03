@@ -4,7 +4,7 @@ namespace Lean;
 
 class Mailer {
 
-    public $service;
+  public $service;
 
   protected function __construct() {
 
@@ -16,10 +16,10 @@ class Mailer {
 
       case 'mailgun':
           $this->service =  Mailer\Mailgun::instance();
-            break;
+          break;
 
       case 'sendgrid':
-          $this->service =  Mailer\Sengrid::instance();
+          $this->service =  Mailer\Sendgrid::instance();
           break;
 
       case 'swiftmailer':
