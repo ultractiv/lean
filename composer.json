@@ -3,23 +3,24 @@
     "description": "The PHP framework for simple, REST API backend. It gets out of your way, so you can get your work done.",
     "type": "library",
     "keywords": ["framework","api","lean","lean development","rest","mvc"],
-    "homepage": "http://github.com/ultractiv/lean",
+    "homepage": "https://github.com/ultractiv/lean",
     "license": "MIT",
     "authors": [
         {
             "name": "Yemi Agbetunsin",
             "email": "temi.yemi@gmail.com",
-            "homepage": "http://github.com/temiyemi",
+            "homepage": "https://github.com/temiyemi",
             "role": "Developer"
         }
     ],
     "require": {
-        "php":">=5.4.14",
-        "ext-memcached":"*",
-        "ext-mbstring":"*",
-        "mustangostang/spyc":"0.5.x",
-      	"icanboogie/inflector":"*",
-	    "twig/twig":"1.*"
+      "php":">=5",
+      "ext-memcached":"*",
+      "ext-mbstring":"*",
+      "mustangostang/spyc":"0.5.x",
+      "icanboogie/inflector":"*",
+	    "twig/twig":"*",
+      "aws/aws-sdk-php":"~3.38.36"
     },
     "autoload": {
         "psr-0": {

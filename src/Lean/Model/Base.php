@@ -12,7 +12,7 @@ use ICanBoogie\Inflector;
 class Base {
 
   use Traits;
-  use Validator;  
+  use Validator;
 
   protected $primary_key = 'id'; // primary key field
   protected $table; // table name of model
@@ -52,7 +52,7 @@ class Base {
 
   protected function __construct($attrs = null) {
 
-    if (!$this->no_backend) {      
+    if (!$this->no_backend) {
       if (! $this->table) {
         $this->table = strtolower ( Inflector::get()->pluralize( get_class($this) ) );
       }
@@ -69,10 +69,14 @@ class Base {
 
     if (defined('AWS_CONSUMER_KEY') && defined('AWS_CONSUMER_SECRET') && defined('AWS_BUCKET')) {
       if (! class_exists('\Aws\S3\S3Client') ) throw new Exception("AWS S3 packaged is required");
-      $this->s3 = \Aws\S3\S3Client::factory(array(
-        'key'=> AWS_CONSUMER_KEY,
-        'secret'=> AWS_CONSUMER_SECRET
-      ));
+      $this->s3 = new \Aws\S3\S3Client([
+        'version' => 'latest',
+        'region' => AWS_REGION,
+        'credentials' => [
+          'key'=> AWS_CONSUMER_KEY,
+          'secret'=> AWS_CONSUMER_SECRET
+        ]
+      ]);
     }
 
     $this->validator = ValidatorBase::instance ();
@@ -256,7 +260,7 @@ class Base {
       $tables = array();
       $clauses = array();
 
-      foreach ($joins as $table => $foreign_key){        
+      foreach ($joins as $table => $foreign_key){
         array_push($tables, $table);
         array_push($clauses, "{$this->table}.{$foreign_key}={$table}.id");
       }
@@ -268,7 +272,7 @@ class Base {
       if ($clauses) $select .= " where ".join(" and ", $clauses);
 
       if ($this->order != '') $select .= " order by {$this->table}.{$this->order}";
-      
+
       $io = $this->db->prepare ($select);
       if ($io->execute ())
         return $this->protectMany($io->fetchAll ( \PDO::FETCH_ASSOC ));
@@ -287,10 +291,10 @@ class Base {
 
     // pretend to save if no db persistence
     if ($this->no_backend == true) return true;
-    
+
     // unset the placeholder for uploaded files
     if (isset($attrs['files_to_upload'])) unset($attrs['files_to_upload']);
-    
+
     // unset all virtual attibutes
     if ($this->virtual_attrs != '')
       foreach (explode(' ', $this->virtual_attrs) as $f)

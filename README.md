@@ -8,7 +8,7 @@ Hence, this is best suited to provisioning JSON APIs, at the moment.
 #### As used in:
 * [Annals of Tropical Pathology](http://www.annalsoftropicalpathology.org)
 * [SOGHIN](http://www.soghinjournal.com)
-* [Destination Connect DMC](http://www.connectdmc.com)
+* PICC Nigeria's [old Website](https://github.com/piccnigeria/website)
 
 #### Warning:
 * Lack of documentation could make getting started a bit complex, but holla me at [temi.yemi@gmail.com](mailto:temi.yemi@gmail.com?subject=ultractiv/lean) if you need some help

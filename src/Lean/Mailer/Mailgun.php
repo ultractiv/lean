@@ -26,7 +26,8 @@ class Mailgun implements MailerInterface {
 
     try {
     	$this->mailer = \Mailgun\Mailgun::create(MAILGUN_APIKEY);
-    } catch (\ErrorException $e) {
+    }
+    catch (\ErrorException $e) {
       throw new \Exception("Mailgun Error:" . $e->getMessage(), 1);
     }
 
@@ -116,7 +117,8 @@ class Mailgun implements MailerInterface {
       if (!getenv('MAILER_PRETEND'))
         $this->mailer->messages()->send(MAILGUN_DOMAIN, $this->message, $this->attachments);
       return true;
-    } catch (\ErrorException $e){
+    }
+    catch (\ErrorException $e){
       # Logger::log($e);
     }
   }
