@@ -19,7 +19,7 @@
       "ext-mbstring":"*",
       "mustangostang/spyc":"0.5.x",
       "icanboogie/inflector":"*",
-	    "twig/twig":"*",
+	    "twig/twig":"1.*",
       "aws/aws-sdk-php":"~3"
     },
     "autoload": {
