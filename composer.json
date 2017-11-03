@@ -20,7 +20,7 @@
       "mustangostang/spyc":"0.5.x",
       "icanboogie/inflector":"*",
 	    "twig/twig":"*",
-      "aws/aws-sdk-php":"~3.38.36"
+      "aws/aws-sdk-php":"~3"
     },
     "autoload": {
         "psr-0": {
