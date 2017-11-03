@@ -42,16 +42,6 @@ class Bootstrap {
 
     # Test environment
     if (preg_match($this->patterns['LOCALHOST'], $_SERVER['HTTP_HOST'])) {
-      /*$server = array(
-        'http_host'=>$_SERVER['HTTP_HOST'],
-        'remote_addr'=>$_SERVER['REMOTE_ADDR'],
-        'request_uri'=>$_SERVER['REQUEST_URI'],
-        'path_info'=>$_SERVER['PATH_INFO'],
-        'script_name'=>$_SERVER['SCRIPT_NAME'],
-        'document_root'=>$_SERVER['DOCUMENT_ROOT'],
-        'server_addr'=>$_SERVER['SERVER_ADDR'],
-        'server_name'=>$_SERVER['SERVER_NAME']
-      );*/
       $root = '/' . explode('/', ltrim($_SERVER['SCRIPT_NAME'],"/"), 2)[0];
     }
     else {
@@ -86,7 +76,7 @@ class Bootstrap {
       define('DATABASE_TYPE', $db['type'] || 'mysql');
       if (array_key_exists('url', $db) && preg_match($this->patterns['MYSQL_URL'], $this->read($db['url']), $match)) {
         $db = $match;
-      }      
+      }
       define('DATABASE_HOST', $this->read($db['host']));
       define('DATABASE_USER', $this->read($db['user']));
       define('DATABASE_PASS', $this->read($db['password']));
@@ -162,7 +152,7 @@ class Bootstrap {
       }
     }
 
-    # if (array_key_exists('webservices', $config)) {      
+    # if (array_key_exists('webservices', $config)) {
       # $webservices = $config['webservices'];
       if (array_key_exists('twitter', $config)) {
         $twitter = $config['twitter'];
@@ -184,8 +174,10 @@ class Bootstrap {
             define('AWS_CONSUMER_KEY',    $this->read($aws['access_key']));
             define('AWS_CONSUMER_SECRET', $this->read($aws['secret_key']));
             define('AWS_BUCKET',          $this->read($aws['bucket']));
-
-            //check that AWS is callable or die
+            if (array_key_exists('region', $aws)) {
+              define('AWS_REGION',        $this->read($aws['region']));
+            }
+            else define('AWS_REGION',   'us-west-2');
 
             foreach($config['uploads'] as $resource => $directory)
               putenv("{$resource}_upload_dir=".$directory);
@@ -210,4 +202,4 @@ class Bootstrap {
     return getenv($match[1]);
   }
 
-} 
+}
